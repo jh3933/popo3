@@ -8,434 +8,289 @@
     <style>
         /* --- CSS Variables (Romance Fantasy Theme) --- */
         :root {
-            --bg-color: #fdfcf8; /* 크림색 배경 */
-            --accent-gold: #d4af37; /* 앤틱 골드 */
-            --accent-rose: #e0bfb8; /* 로즈 골드 */
-            --text-color: #4a3b32; /* 진한 갈색 (부드러운 블랙) */
+            --bg-color: #fdfcf8;
+            --accent-gold: #d4af37;
+            --accent-rose: #e0bfb8;
+            --text-color: #4a3b32;
             --glass-bg: rgba(255, 253, 250, 0.85);
-            --glass-border: rgba(212, 175, 55, 0.4); /* 금색 테두리 */
+            --glass-border: rgba(212, 175, 55, 0.4);
             --section-spacing: 140px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Gowun Batang', serif; /* 명조체 계열 */
+            font-family: 'Gowun Batang', serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
             line-height: 1.8;
             -webkit-font-smoothing: antialiased;
+            cursor: default; 
         }
 
         h1, h2, h3 {
-            font-family: 'Cinzel', serif; /* 클래식한 영문 폰트 */
+            font-family: 'Cinzel', serif;
             text-transform: uppercase;
             letter-spacing: 3px;
             color: #2c241b;
         }
 
-        /* --- Magical Background (Canvas) --- */
         #ai-network-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            /* 은은한 새벽/노을 느낌의 그라데이션 */
             background: linear-gradient(135deg, #fffbf0 0%, #fff0f5 100%);
         }
 
-        /* --- Layout --- */
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; text-align: center; }
+        section { padding: var(--section-spacing) 0; position: relative; }
 
-        section {
-            padding: var(--section-spacing) 0;
-            position: relative;
-        }
-
-        /* --- Reveal Animation --- */
         .reveal-up {
-            opacity: 0;
-            transform: translateY(60px);
+            opacity: 0; transform: translateY(60px);
             transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+        .reveal-up.active { opacity: 1; transform: translateY(0); }
 
-        .reveal-up.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Hero Section --- */
+        /* --- Hero Section & Typewriter Effect --- */
         .hero-section {
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            display: flex; justify-content: center; align-items: center; text-align: center;
         }
 
         .hero-content h1 {
             font-size: clamp(2.5rem, 6vw, 5rem);
-            font-weight: 700;
-            margin-bottom: 30px;
+            font-weight: 700; margin-bottom: 30px;
             color: #2a2a2a;
-            /* 우아한 텍스트 그림자 */
             text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3); 
             background: -webkit-linear-gradient(45deg, #2c241b, #d4af37, #2c241b);
+            
+            /* [수정 완료] 표준 속성 추가 */
             -webkit-background-clip: text;
+            background-clip: text; 
+            
             -webkit-text-fill-color: transparent; 
             background-size: 200% auto;
             animation: shineText 5s linear infinite;
+            
+            /* 타자기 효과 커서 */
+            border-right: 3px solid var(--accent-gold);
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            width: 0; /* JS로 제어 */
+            height: 1.2em; vertical-align: middle;
         }
 
-        @keyframes shineText {
-            to { background-position: 200% center; }
-        }
+        @keyframes shineText { to { background-position: 200% center; } }
+        @keyframes blinkCursor { from { border-right-color: var(--accent-gold); } to { border-right-color: transparent; } }
 
         .hero-content p {
-            font-size: 1.3rem;
-            color: #6d5d53;
-            max-width: 600px;
-            margin: 0 auto;
+            font-size: 1.3rem; color: #6d5d53; max-width: 600px; margin: 0 auto;
             font-weight: 400;
-            border-top: 1px solid var(--accent-gold);
-            border-bottom: 1px solid var(--accent-gold);
-            padding: 20px 0;
-            display: inline-block;
+            border-top: 1px solid var(--accent-gold); border-bottom: 1px solid var(--accent-gold);
+            padding: 20px 0; display: inline-block;
+            opacity: 0; /* JS로 페이드인 */
+            transition: opacity 1s ease 0.5s;
         }
+        .hero-content p.show { opacity: 1; }
 
-        /* --- Titles --- */
         .section-title {
-            display: inline-block;
-            font-size: 2.2rem;
-            margin-bottom: 70px;
-            position: relative;
-            color: #2c241b;
+            display: inline-block; font-size: 2.2rem; margin-bottom: 70px;
+            position: relative; color: #2c241b;
         }
-
-        /* 장식적인 밑줄 (Decoration) */
         .section-title::after {
-            content: '❖'; /* 마름모 장식 */
-            display: block;
-            font-size: 1rem;
-            color: var(--accent-gold);
-            margin-top: 15px;
-            letter-spacing: 10px;
+            content: '❖'; display: block; font-size: 1rem; color: var(--accent-gold);
+            margin-top: 15px; letter-spacing: 10px;
         }
         .section-title::before {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 1px;
-            background: var(--accent-gold);
-            margin: 0 auto 10px auto;
+            content: ''; display: block; width: 60px; height: 1px;
+            background: var(--accent-gold); margin: 0 auto 10px auto;
         }
 
-        /* --- Character Cards (Portrait Frame Style) --- */
+        /* --- Character Cards --- */
         .character-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 50px;
-            justify-content: center; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px; justify-content: center; 
         }
 
         .char-card {
-            background: #fff;
-            /* 이중 테두리로 액자 느낌 */
-            border: 1px solid var(--accent-gold);
-            outline: 4px solid rgba(212, 175, 55, 0.1);
-            outline-offset: -10px;
-            
-            border-radius: 4px; /* 각진 모서리로 클래식함 강조 */
-            overflow: hidden;
-            position: relative;
-            transition: all 0.5s ease;
-            cursor: pointer;
+            background: #fff; border: 1px solid var(--accent-gold);
+            outline: 4px solid rgba(212, 175, 55, 0.1); outline-offset: -10px;
+            border-radius: 4px; overflow: hidden; position: relative;
+            transition: all 0.5s ease; cursor: pointer;
             box-shadow: 0 15px 30px rgba(74, 59, 50, 0.1);
         }
-
         .char-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 25px 50px rgba(212, 175, 55, 0.25);
             outline-color: rgba(212, 175, 55, 0.6);
         }
 
-        .char-img-box {
-            height: 420px;
-            overflow: hidden;
-            position: relative;
-            background: #f4f1ea;
-        }
+        .char-img-box { height: 420px; overflow: hidden; position: relative; background: #f4f1ea; }
+        .char-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .char-card:hover .char-img-box img { transform: scale(1.05); filter: sepia(20%); }
 
-        .char-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
+        .char-info { padding: 30px 20px; background: #fff; position: relative; z-index: 3; }
+        .char-info h3 { font-size: 1.5rem; margin-bottom: 10px; color: #2c241b; font-weight: 700; }
+        .char-info p { color: #8c7b70; font-size: 0.95rem; font-family: 'Gowun Batang', serif; }
 
-        .char-card:hover .char-img-box img {
-            transform: scale(1.05);
-            filter: sepia(20%); /* 살짝 빛바랜 느낌 */
-        }
-
-        .char-info {
-            padding: 30px 20px;
-            background: #fff;
-            position: relative;
-            z-index: 3;
-        }
-
-        .char-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #2c241b;
-            font-weight: 700;
-        }
-        
-        .char-info p {
-            color: #8c7b70;
-            font-size: 0.95rem;
-            font-family: 'Gowun Batang', serif;
-        }
-
-        /* --- Video Section --- */
+        /* --- Video & Contact --- */
         .video-wrapper {
-            width: 100%;
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-            /* 금색 액자 스타일 */
-            border: 8px solid #fff;
-            outline: 1px solid var(--accent-gold);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            background: #fff;
-            margin: 0 auto;
+            width: 100%; border-radius: 4px; overflow: hidden; position: relative;
+            border: 8px solid #fff; outline: 1px solid var(--accent-gold);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff; margin: 0 auto;
         }
-
         .video-placeholder {
-            width: 100%;
-            height: 60vh;
-            background: #fcfbf8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            width: 100%; height: 60vh; background: #fcfbf8;
+            display: flex; justify-content: center; align-items: center; position: relative;
         }
-
         .play-button-overlay {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4rem;
-            color: var(--accent-gold);
-            pointer-events: none;
-            opacity: 0.7;
-            transition: 0.3s;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 4rem; color: var(--accent-gold); pointer-events: none;
+            opacity: 0.7; transition: 0.3s; text-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .video-wrapper:hover .play-button-overlay {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
+        .video-wrapper:hover .play-button-overlay { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
 
-        /* --- Contact --- */
         .contact-link {
-            display: inline-block;
-            font-size: 1.1rem;
-            color: var(--text-color);
-            text-decoration: none;
-            border: 1px solid var(--accent-gold);
-            padding: 18px 50px;
-            transition: 0.4s;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            background: transparent;
-            margin-top: 30px;
-            position: relative;
-            overflow: hidden;
+            display: inline-block; font-size: 1.1rem; color: var(--text-color);
+            text-decoration: none; border: 1px solid var(--accent-gold);
+            padding: 18px 50px; transition: 0.4s; font-family: 'Cinzel', serif;
+            font-weight: 700; background: transparent; margin-top: 30px;
+            position: relative; overflow: hidden;
         }
-        
-        /* 버튼 호버 효과 */
         .contact-link::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 0%; height: 100%;
-            background: var(--accent-gold);
-            transition: 0.4s;
-            z-index: -1;
+            content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
+            background: var(--accent-gold); transition: 0.4s; z-index: -1;
         }
+        .contact-link:hover { color: #fff; border-color: var(--accent-gold); }
+        .contact-link:hover::before { width: 100%; }
 
-        .contact-link:hover {
-            color: #fff;
-            border-color: var(--accent-gold);
-        }
-        .contact-link:hover::before {
-            width: 100%;
-        }
-
-        /* --- Modal Popup (RoFan Style) --- */
+        /* --- Modal Popup (Affinity & Chat System Added) --- */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(44, 36, 27, 0.6); /* 짙은 갈색 배경 */
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
-            opacity: 0;
-            transition: opacity 0.4s ease;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(44, 36, 27, 0.6); z-index: 9999;
+            justify-content: center; align-items: center; backdrop-filter: blur(4px);
+            opacity: 0; transition: opacity 0.4s ease;
         }
-
-        .modal-overlay.show {
-            display: flex;
-            opacity: 1;
-        }
-
+        .modal-overlay.show { display: flex; opacity: 1; }
         .modal-content {
-            background: #fffcf5; /* 양피지 느낌 */
-            width: 90%;
-            max-width: 900px;
-            border: 1px solid var(--accent-gold);
-            padding: 40px;
-            position: relative;
+            background: #fffcf5; width: 90%; max-width: 900px;
+            border: 1px solid var(--accent-gold); padding: 40px; position: relative;
             box-shadow: 0 0 0 10px rgba(255,255,255,0.2), 0 30px 60px rgba(0,0,0,0.3);
-            transform: translateY(30px);
-            transition: transform 0.4s ease;
-            text-align: left;
-            /* 장식용 코너 */
+            transform: translateY(30px); transition: transform 0.4s ease; text-align: left;
             background-image: 
                 linear-gradient(45deg, var(--accent-gold) 10px, transparent 10px),
                 linear-gradient(135deg, var(--accent-gold) 10px, transparent 10px),
                 linear-gradient(225deg, var(--accent-gold) 10px, transparent 10px),
                 linear-gradient(315deg, var(--accent-gold) 10px, transparent 10px);
             background-position: top left, top right, bottom right, bottom left;
-            background-size: 20px 20px;
-            background-repeat: no-repeat;
+            background-size: 20px 20px; background-repeat: no-repeat;
         }
-
-        .modal-overlay.show .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-body {
-            display: flex;
-            gap: 40px;
-            align-items: flex-start;
-        }
-
-        .modal-img-box {
-            flex: 0 0 350px;
-            border: 5px solid #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            outline: 1px solid var(--accent-gold);
-        }
-
-        .modal-img-box img {
-            width: 100%;
-            display: block;
-        }
-
-        .modal-text {
-            flex: 1;
-        }
-
-        .modal-text h3 {
-            font-size: 2.2rem;
-            color: #2c241b;
-            margin-bottom: 5px;
-            border-bottom: 1px solid var(--accent-gold);
-            padding-bottom: 10px;
-            display: inline-block;
-        }
-
-        .modal-desc-short {
-            font-size: 1.1rem;
-            color: #d4af37; /* 골드 컬러 */
-            font-weight: 700;
-            margin-top: 10px;
-            margin-bottom: 25px;
-            font-family: 'Cinzel', serif;
-        }
-
-        .modal-detail-text {
-            font-size: 1.05rem;
-            color: #5d4d42;
-            line-height: 1.9;
-            white-space: pre-line;
-            font-family: 'Gowun Batang', serif;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px; right: 25px;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #d4af37;
-            transition: 0.3s;
-        }
+        .modal-overlay.show .modal-content { transform: translateY(0); }
+        .modal-body { display: flex; gap: 40px; align-items: flex-start; }
+        .modal-img-box { flex: 0 0 350px; border: 5px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); outline: 1px solid var(--accent-gold); }
+        .modal-img-box img { width: 100%; display: block; }
+        .modal-text { flex: 1; position: relative; display: flex; flex-direction: column; height: 100%; min-height: 400px; }
+        
+        .modal-text h3 { font-size: 2.2rem; color: #2c241b; margin-bottom: 5px; border-bottom: 1px solid var(--accent-gold); padding-bottom: 10px; display: inline-block; }
+        .modal-desc-short { font-size: 1.1rem; color: #d4af37; font-weight: 700; margin-top: 10px; margin-bottom: 25px; font-family: 'Cinzel', serif; }
+        .modal-detail-text { font-size: 1.05rem; color: #5d4d42; line-height: 1.9; white-space: pre-line; font-family: 'Gowun Batang', serif; }
+        
+        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 2rem; cursor: pointer; color: #d4af37; transition: 0.3s; z-index: 100; }
         .close-btn:hover { color: #2c241b; transform: rotate(90deg); }
 
+        /* [NEW] Buttons Area */
+        .interaction-buttons { margin-top: 20px; display: flex; gap: 15px; align-items: center; }
+        .action-btn {
+            background: transparent; border: 1px solid var(--accent-gold);
+            padding: 10px 20px; border-radius: 30px; cursor: pointer;
+            font-family: 'Gowun Batang', serif; font-weight: 700; color: #4a3b32;
+            transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .action-btn:hover { background: var(--accent-gold); color: white; }
+        .action-btn.liked { background: var(--accent-rose); border-color: var(--accent-rose); color: white; animation: heartBeat 0.5s; }
+        
+        .speech-bubble {
+            background: #fff; border: 1px solid var(--accent-gold);
+            padding: 10px 15px; border-radius: 15px; border-bottom-left-radius: 0;
+            color: #2c241b; font-size: 0.9rem; font-weight: 700;
+            position: absolute; top: -40px; left: 0;
+            opacity: 0; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+            pointer-events: none; z-index: 10; white-space: nowrap;
+        }
+        .speech-bubble.show { opacity: 1; top: -60px; }
+
+        /* [NEW] Chat Interface Styles */
+        .chat-container {
+            display: none; /* 기본 숨김 */
+            flex-direction: column;
+            height: 300px;
+            margin-top: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .chat-container.active { display: flex; }
+        
+        .chat-log {
+            flex: 1; padding: 15px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px;
+            font-size: 0.95rem;
+        }
+        .chat-message { max-width: 80%; padding: 8px 12px; border-radius: 12px; line-height: 1.4; }
+        .chat-message.user { align-self: flex-end; background: var(--accent-rose); color: white; border-bottom-right-radius: 0; }
+        .chat-message.char { align-self: flex-start; background: #fff; border: 1px solid var(--accent-gold); border-bottom-left-radius: 0; }
+        
+        .chat-input-area {
+            display: flex; border-top: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .chat-input {
+            flex: 1; border: none; padding: 15px; background: transparent;
+            font-family: 'Gowun Batang', serif; outline: none;
+        }
+        .chat-send-btn {
+            border: none; background: var(--accent-gold); color: white;
+            padding: 0 20px; cursor: pointer; font-family: 'Cinzel', serif;
+        }
+
+        /* Mobile Adjustments (수정됨) */
         @media (max-width: 768px) {
+            :root { --section-spacing: 80px; } /* [수정 완료] 변수를 :root 안으로 이동 */
+            
             .hero-content h1 { font-size: 2.5rem; }
-            --section-spacing: 80px;
             .char-img-box { height: 350px; }
-            .modal-body { flex-direction: column; }
-            .modal-img-box { flex: auto; width: 100%; }
+            
+            .modal-body { flex-direction: column; } 
+            .modal-img-box { flex: auto; width: 100%; } 
             .modal-content { padding: 25px; }
+            .chat-container { height: 250px; }
         }
 
-        /* --- [NEW] Music Player Button Style --- */
         .music-control {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 253, 250, 0.9);
-            border: 2px solid var(--accent-gold);
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: rgba(255, 253, 250, 0.9); border: 2px solid var(--accent-gold);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 10000; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease; font-size: 1.5rem; color: var(--accent-gold);
+            -webkit-user-select: none; user-select: none;
+        }
+        .music-control:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.6); background: #fff; }
+        .music-control.playing { animation: spin 4s linear infinite; border-color: var(--accent-rose); color: var(--accent-rose); }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+
+        /* Magic Sparkle Cursor */
+        .magic-particle {
+            position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+            background: radial-gradient(circle, #fff 10%, var(--accent-gold) 100%);
             border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 10000;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
-            color: var(--accent-gold);
-            -webkit-user-select: none;
-            user-select: none;
+            transform: translate(-50%, -50%);
+            animation: particleFade 1s forwards;
         }
-
-        .music-control:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
-            background: #fff;
-        }
-
-        /* 음악 재생 중일 때 회전 효과 */
-        .music-control.playing {
-            animation: spin 4s linear infinite;
-            border-color: var(--accent-rose);
-            color: var(--accent-rose);
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
+        @keyframes particleFade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, 20px) scale(0); }
         }
     </style>
 </head>
@@ -454,8 +309,8 @@
 
     <section class="hero-section">
         <div class="container hero-content">
-            <h1>Atelier of Illusions</h1>
-            <p>현실의 경계를 넘어, 마침내 도달한 당신만의 세계</p>
+            <h1 id="typewriter-text">Atelier of Illusions</h1>
+            <p id="hero-subtitle">현실의 경계를 넘어, 마침내 도달한 당신만의 세계</p>
         </div>
     </section>
 
@@ -465,23 +320,25 @@
             <div class="character-grid">
                 
                 <div class="char-card reveal-up" style="transition-delay: 0.2s;" 
-                     onclick="openModal(this)"
-                     data-detail="이름: 깡띵이
-                     나이: 3세 (추정)
-                     소개: 만사가 귀찮은 동네 강아지. 
+                     onclick="openModal(this, 'lowen')"
+                     data-reaction="흐음, 흥미롭군요. 당신의 감정을 분석해봐도 될까요?"
+                     data-detail="이름: 로웬 드 아르카디아
+                     나이: 22세
+                     소개: 제국 역사상 최연소 마법사.
                      
-                     툴툴대지만 당신의 고민을 묵묵히 들어주는 츤데레 힐링견입니다. 칭찬을 들으면 화내는 척하며 꼬리를 흔듭니다.">
+                     늘 나른하고 여유로운 미소를 띠고 있으며, 누구에게나 다정하고 친절해 보입니다. 하지만 그 속은 매우 이성적이고 계산적입니다.">
                     <div class="char-img-box">
-                        <img src="깡띵이.jpeg" alt="깡띵이 이미지">
+                        <img src="로웬3.jpg" alt="로웬 이미지">
                     </div>
                     <div class="char-info">
-                        <h3>깡띵이</h3>
-                        <p> 만사가 귀찮은 듯 툴툴거리는 동네 강아지</p>
+                        <h3>로웬</h3>
+                        <p>역사상 최연소로 마탑주 자리에 오른 천재 마법사</p>
                     </div>
                 </div>
 
                 <div class="char-card reveal-up" style="transition-delay: 0.4s;"
-                     onclick="openModal(this)"
+                     onclick="openModal(this, 'bellatrix')"
+                     data-reaction="후후, 제 매력에 빠지셨나요? 영광인 줄 아세요."
                      data-detail="이름: 벨라트릭스 드 로제
                      나이: 20세
                      소개: 제국 막내 황녀.
@@ -497,7 +354,8 @@
                 </div>
 
                 <div class="char-card reveal-up" style="transition-delay: 0.6s;"
-                     onclick="openModal(this)"
+                     onclick="openModal(this, 'kyric')"
+                     data-reaction="...쓸데없는 짓을. 뭐, 나쁘진 않군."
                      data-detail="이름: 카이릭 폰 에크하르트
                      나이: 28세
                      소개: 북부의 냉혈한 대공.
@@ -546,50 +404,60 @@
                 <div class="modal-text">
                     <h3 id="modal-title">캐릭터 이름</h3>
                     <p id="modal-desc" class="modal-desc-short">짧은 설명</p>
-                    <p id="modal-detail" class="modal-detail-text">상세 설명이 들어갑니다.</p>
+                    
+                    <div id="info-mode">
+                        <p id="modal-detail" class="modal-detail-text">상세 설명이 들어갑니다.</p>
+                    </div>
+
+                    <div id="chat-mode" class="chat-container">
+                        <div class="chat-log" id="chat-log">
+                            <div class="chat-message char">무슨 용건이지?</div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chat-input" class="chat-input" placeholder="말을 걸어보세요..." onkeypress="handleKeyPress(event)">
+                            <button class="chat-send-btn" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                    
+                    <div class="interaction-buttons">
+                        <button class="action-btn" id="like-btn" onclick="toggleLike()">
+                            ♥ 호감 표시
+                        </button>
+                        <button class="action-btn" id="chat-btn" onclick="toggleChatMode()">
+                            💬 대화하기
+                        </button>
+                        <div class="speech-bubble" id="speech-bubble"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        /* --- Magical Particle Background (Gold Sparkles) --- */
+        /* --- 1. Particles --- */
         const canvas = document.getElementById('ai-network-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
         let particlesArray;
         const numberOfParticles = 80;
         const connectionDistance = 150;
-
         let mouse = { x: null, y: null, radius: 200 }
-
         window.addEventListener('mousemove', function(event) {
-            mouse.x = event.x;
-            mouse.y = event.y;
+            mouse.x = event.x; mouse.y = event.y; createMagicSparkle(event.x, event.y);
         });
-
         class Particle {
             constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.directionX = (Math.random() * 0.2) - 0.1; 
-                this.directionY = (Math.random() * 0.2) - 0.1;
-                this.size = (Math.random() * 3) + 1;
-                this.opacity = Math.random() * 0.5 + 0.2;
+                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() * 0.2) - 0.1; this.directionY = (Math.random() * 0.2) - 0.1;
+                this.size = (Math.random() * 3) + 1; this.opacity = Math.random() * 0.5 + 0.2;
             }
-
             draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')';
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')'; ctx.fill();
             }
-
             update() {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx*dx + dy*dy);
                 if (distance < mouse.radius) {
                     if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 0.5;
@@ -597,95 +465,153 @@
                     if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 0.5;
                     if (mouse.y > this.y && this.y > this.size * 10) this.y -= 0.5;
                 }
-
-                this.x += this.directionX;
-                this.y += this.directionY;
-
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
-
+                this.x += this.directionX; this.y += this.directionY;
+                if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
                 this.opacity += (Math.random() * 0.02) - 0.01;
-                if(this.opacity < 0.1) this.opacity = 0.1;
-                if(this.opacity > 0.8) this.opacity = 0.8;
-
+                if(this.opacity < 0.1) this.opacity = 0.1; if(this.opacity > 0.8) this.opacity = 0.8;
                 this.draw();
             }
         }
-
-        function init() {
-            particlesArray = [];
-            for (let i = 0; i < numberOfParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-
+        function init() { particlesArray = []; for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); } }
         function connect() {
             for (let a = 0; a < particlesArray.length; a++) {
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
                         + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    
                     if (distance < (connectionDistance * connectionDistance)) {
-                        ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)'; 
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-                        ctx.stroke();
+                        ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)'; ctx.lineWidth = 0.5;
+                        ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
                     }
                 }
             }
         }
-
         function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-            }
-            connect();
+            requestAnimationFrame(animate); ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect();
+        }
+        window.addEventListener('resize', function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); });
+        init(); animate();
+
+        /* --- 2. Magic Sparkle --- */
+        function createMagicSparkle(x, y) {
+            if(Math.random() > 0.3) return;
+            const sparkle = document.createElement('div'); sparkle.classList.add('magic-particle');
+            const size = Math.random() * 4 + 2;
+            const offsetX = (Math.random() - 0.5) * 15; const offsetY = (Math.random() - 0.5) * 15;
+            sparkle.style.width = `${size}px`; sparkle.style.height = `${size}px`;
+            sparkle.style.left = `${x + offsetX}px`; sparkle.style.top = `${y + offsetY}px`;
+            const colors = ['#d4af37', '#e0bfb8', '#ffffff'];
+            sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            document.body.appendChild(sparkle);
+            setTimeout(() => { sparkle.remove(); }, 1000);
         }
 
-        window.addEventListener('resize', function() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            init();
+        /* --- 3. Typewriter --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleElement = document.getElementById('typewriter-text');
+            const subtitleElement = document.getElementById('hero-subtitle');
+            const originalText = titleElement.innerText;
+            titleElement.innerText = ''; titleElement.style.width = 'auto';
+            let i = 0;
+            function typeWriter() {
+                if (i < originalText.length) {
+                    titleElement.innerHTML += originalText.charAt(i); i++;
+                    setTimeout(typeWriter, 120);
+                } else {
+                    titleElement.style.borderRight = "3px solid transparent";
+                    titleElement.style.animation = "blinkCursor 0.7s infinite";
+                    subtitleElement.classList.add('show');
+                }
+            }
+            setTimeout(typeWriter, 500);
         });
 
-        init();
-        animate();
-
-        /* --- Scroll Animation --- */
+        /* --- Scroll Reveal --- */
         const revealElements = document.querySelectorAll('.reveal-up');
         const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
         }, { threshold: 0.1 });
-
         revealElements.forEach(el => revealObserver.observe(el));
 
-        /* --- Modal Scripts --- */
+        /* --- Global Variables for Modal --- */
         const modal = document.getElementById('char-modal');
         const modalImg = document.getElementById('modal-img');
         const modalTitle = document.getElementById('modal-title');
         const modalDesc = document.getElementById('modal-desc');
         const modalDetail = document.getElementById('modal-detail');
+        const likeBtn = document.getElementById('like-btn');
+        const speechBubble = document.getElementById('speech-bubble');
+        
+        // Chat Elements
+        const infoMode = document.getElementById('info-mode');
+        const chatMode = document.getElementById('chat-mode');
+        const chatLog = document.getElementById('chat-log');
+        const chatInput = document.getElementById('chat-input');
+        const chatBtn = document.getElementById('chat-btn');
 
-        function openModal(element) {
+        let currentReaction = ""; 
+        let currentCharId = ""; // 'lowen', 'bellatrix', 'kyric'
+
+        // Character Dialogues Database
+        const responses = {
+            lowen: {
+                greeting: "어서오세요. 마탑에는 무슨 일로?",
+                default: "흐음, 논리적으로 분석이 불가능한 말이군요.",
+                keywords: {
+                    "안녕": "반갑습니다. 별들이 당신의 방문을 예견했었죠.",
+                    "좋아해": "사랑... 인간의 가장 불안정하고 흥미로운 감정이군요.",
+                    "취미": "별을 관측하거나 고대 마법서를 해독하는 것입니다.",
+                    "이름": "로웬 드 아르카디아. 편하게 로웬이라 부르세요."
+                }
+            },
+            bellatrix: {
+                greeting: "어머, 귀한 손님이 오셨네요?",
+                default: "후후, 무슨 말씀인지 잘 모르겠어요.",
+                keywords: {
+                    "안녕": "안녕하세요? 제 드레스 어때요? 오늘을 위해 준비했어요.",
+                    "좋아해": "어머, 벌써요? 줄을 서세요. 제 팬은 제국에 넘쳐나니까요.",
+                    "취미": "티타임을 즐기거나... 제국의 정세를 살피는 일이죠.",
+                    "이름": "벨라트릭스 드 로제. 이 제국의 가장 빛나는 별이죠."
+                }
+            },
+            kyric: {
+                greeting: "무슨 용건이지? 바쁜 몸이다.",
+                default: "쓸데없는 소리군.",
+                keywords: {
+                    "안녕": "그래. 용건만 간단히 해라.",
+                    "좋아해": "......(얼굴을 붉히며 고개를 돌린다) 헛소리하지 마라.",
+                    "취미": "마수 토벌. 검을 닦는 것. 그 외엔 없다.",
+                    "이름": "카이릭 폰 에크하르트. 북부의 주인이다."
+                }
+            }
+        };
+
+        function openModal(element, charId) {
             const imgSrc = element.querySelector('img').src;
             const title = element.querySelector('h3').innerText;
             const desc = element.querySelector('p').innerText;
             const detail = element.getAttribute('data-detail');
+            
+            currentReaction = element.getAttribute('data-reaction');
+            currentCharId = charId;
 
             modalImg.src = imgSrc;
             modalTitle.innerText = title;
             modalDesc.innerText = desc;
-            modalDetail.innerText = detail ? detail : "";
+            modalDetail.innerText = detail;
+
+            // Reset UI
+            likeBtn.classList.remove('liked');
+            speechBubble.classList.remove('show');
+            speechBubble.innerText = "";
+            
+            // Show Info Mode first
+            infoMode.style.display = 'block';
+            chatMode.style.display = 'none';
+            chatMode.classList.remove('active');
+            chatBtn.innerText = "💬 대화하기";
 
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
@@ -696,27 +622,87 @@
             document.body.style.overflow = 'auto';
         }
 
+        // --- Affinity Function ---
+        function toggleLike() {
+            if (!likeBtn.classList.contains('liked')) {
+                likeBtn.classList.add('liked');
+                speechBubble.innerText = currentReaction;
+                speechBubble.classList.add('show');
+                setTimeout(() => { speechBubble.classList.remove('show'); }, 3000);
+            }
+        }
+
+        // --- Chat Functionality ---
+        function toggleChatMode() {
+            if (chatMode.style.display === 'none' || chatMode.style.display === '') {
+                // Switch to Chat
+                infoMode.style.display = 'none';
+                chatMode.style.display = 'flex';
+                chatMode.classList.add('active');
+                chatBtn.innerText = "📜 정보 보기";
+                
+                // Greeting Message
+                chatLog.innerHTML = `<div class="chat-message char">${responses[currentCharId].greeting}</div>`;
+            } else {
+                // Switch back to Info
+                infoMode.style.display = 'block';
+                chatMode.style.display = 'none';
+                chatMode.classList.remove('active');
+                chatBtn.innerText = "💬 대화하기";
+            }
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            // Add User Message
+            addMessage(text, 'user');
+            chatInput.value = '';
+
+            // Simulate Typing Delay
+            setTimeout(() => {
+                const charData = responses[currentCharId];
+                let reply = charData.default;
+
+                // Simple Keyword Matching
+                for (const key in charData.keywords) {
+                    if (text.includes(key)) {
+                        reply = charData.keywords[key];
+                        break;
+                    }
+                }
+                addMessage(reply, 'char');
+            }, 600);
+        }
+
+        function addMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('chat-message', sender);
+            msgDiv.innerText = text;
+            chatLog.appendChild(msgDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
 
-        /* --- [NEW] Music Play Script --- */
+        /* --- Music --- */
         const audio = document.getElementById('bgm-audio');
         const musicIcon = document.getElementById('music-icon');
         let isPlaying = false;
-
         function toggleMusic() {
             if (isPlaying) {
-                audio.pause();
-                isPlaying = false;
-                musicIcon.innerText = '♫'; // 음악 멈췄을 때 아이콘
+                audio.pause(); isPlaying = false; musicIcon.innerText = '♫';
                 document.querySelector('.music-control').classList.remove('playing');
             } else {
-                audio.play().catch(error => {
-                    alert("음악 재생을 위해 페이지를 한 번 클릭해주세요.");
-                });
-                isPlaying = true;
-                musicIcon.innerText = '❚❚'; // 재생 중일 때 아이콘
+                audio.play().catch(() => alert("클릭 후 다시 시도해주세요."));
+                isPlaying = true; musicIcon.innerText = '❚❚';
                 document.querySelector('.music-control').classList.add('playing');
             }
         }
