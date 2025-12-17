@@ -36,7 +36,7 @@
             color: #2c241b;
         }
 
-        /* Loading Screen */
+        /* Loading Screen (수정됨: 클릭 통과 및 안전장치) */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fffcf5; z-index: 99999;
@@ -53,7 +53,7 @@
             font-family: 'Cinzel', serif; color: var(--accent-gold);
             font-size: 1.2rem; letter-spacing: 5px; animation: pulse 2s infinite;
         }
-        #loader.hidden { opacity: 0; visibility: hidden; }
+        #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
         #ai-network-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -102,10 +102,10 @@
             width: 0; height: 1.2em; vertical-align: middle;
         }
 
-        /* [MODIFIED] Scroll Indicator Position */
+        /* Scroll Indicator (위치 수정됨) */
         .scroll-down {
             position: absolute; 
-            bottom: 30px; /* 화면 맨 아래에서 30px 위 */
+            bottom: 30px; 
             left: 50%;
             transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center;
@@ -143,7 +143,40 @@
             background: var(--accent-gold); margin: 0 auto 10px auto;
         }
 
-        /* --- Cards with 3D Tilt Effect --- */
+        /* [NEW] Worldview Section Styles */
+        .world-content {
+            display: flex; align-items: center; gap: 50px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 50px; border-radius: 8px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+        .world-img-frame {
+            flex: 1; min-width: 300px; height: 400px;
+            border: 8px solid #fff; outline: 1px solid var(--accent-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; position: relative;
+        }
+        .world-img-frame img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
+        .world-img-frame:hover img { transform: scale(1.05); }
+        
+        .world-text-box { flex: 1.2; }
+        .world-title {
+            font-size: 2rem; color: #2c241b; margin-bottom: 10px;
+            font-family: 'Gowun Batang', serif; font-weight: 700;
+        }
+        .world-eng-title {
+            font-family: 'Cinzel', serif; color: var(--accent-gold); 
+            font-size: 1rem; margin-bottom: 25px; display: block; letter-spacing: 2px;
+        }
+        .world-tagline {
+            font-size: 1.2rem; color: #8a6d5d; font-style: italic;
+            border-left: 3px solid var(--accent-gold); padding-left: 15px;
+            margin-bottom: 30px; font-weight: 600;
+        }
+        .world-desc { font-size: 1rem; color: #5d4d42; line-height: 1.9; }
+
+        /* Cards with 3D Tilt */
         .character-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 50px; justify-content: center; perspective: 1000px;
@@ -270,6 +303,7 @@
         @media (max-width: 768px) {
             body { --section-spacing: 80px; } 
             .hero-content h1 { font-size: 2.5rem; } .char-img-box { height: 350px; }
+            .world-content { flex-direction: column; } .world-img-frame { width: 100%; height: 300px; }
             .modal-body { flex-direction: column; } .modal-img-box { flex: auto; width: 100%; } 
             .modal-content { padding: 25px; } .chat-container { height: 250px; }
         }
@@ -383,6 +417,29 @@
 
     <div class="divider"><span>❖</span></div>
 
+    <section id="worldview">
+        <div class="container">
+            <h2 class="section-title reveal-up">The World</h2>
+            <div class="world-content reveal-up">
+                <div class="world-img-frame">
+                    <img src="아스테리아2.jpg" alt="Asteria Empire" onerror="this.src='https://via.placeholder.com/600x400/d4af37/2c241b?text=Asteria+Empire'">
+                </div>
+                <div class="world-text-box">
+                    <h3 class="world-title">황혼이 깃든 제국, 아스테리아</h3>
+                    <span class="world-eng-title">Asteria</span>
+                    <p class="world-tagline">"가장 아름다운 꽃은 썩어가는 흙 위에서 피어난다."</p>
+                    <p class="world-desc">
+                        대륙의 패자인 아스테리아 제국.<br>
+                        찬란했던 영광은 옛말이 되고, 현재는 늙고 병든 황제와 사치와 향락에 빠진 귀족들로 인해 서서히 무너져 내리고 있습니다.<br><br>
+                        황제의 죽음이 임박했다는 소문과 함께, 차기 황권을 차지하기 위한 '보이지 않는 전쟁'이 시작되었습니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"><span>❖</span></div>
+
     <section id="characters">
         <div class="container">
             <h2 class="section-title reveal-up">Characters</h2>
@@ -474,9 +531,14 @@
         const sfxClick = document.getElementById('sfx-click');
         function playSfx(audio) { if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); } }
 
-        window.addEventListener('load', () => {
+        /* [FIXED] Robust Loading Logic */
+        document.addEventListener("DOMContentLoaded", function() {
             const loader = document.getElementById('loader');
-            setTimeout(() => { loader.classList.add('hidden'); setTimeout(startTypewriter, 500); }, 1500);
+            // Force load after 2 seconds regardless of asset state
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                setTimeout(startTypewriter, 500); 
+            }, 2000);
         });
 
         const canvas = document.getElementById('ai-network-canvas');
@@ -509,7 +571,7 @@
         });
         document.querySelectorAll('button, a, .char-card').forEach(el => { el.addEventListener('mouseenter', () => playSfx(sfxHover)); });
 
-        /* Particles Logic (Same as before) */
+        /* Particles Logic */
         class Particle {
             constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.directionX = (Math.random() * 0.2) - 0.1; this.directionY = (Math.random() * 0.2) - 0.1; this.size = (Math.random() * 3) + 1; this.opacity = Math.random() * 0.5 + 0.2; }
             draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')'; ctx.fill(); }
