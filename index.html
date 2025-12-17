@@ -6,7 +6,7 @@
     <title>Atelier of Illusions</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS Variables (Romance Fantasy Theme) --- */
+        /* --- CSS Variables --- */
         :root {
             --bg-color: #fdfcf8;
             --accent-gold: #d4af37;
@@ -36,7 +36,7 @@
             color: #2c241b;
         }
 
-        /* Loading Screen (수정됨: 클릭 통과 및 안전장치) */
+        /* Loading Screen */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fffcf5; z-index: 99999;
@@ -102,11 +102,8 @@
             width: 0; height: 1.2em; vertical-align: middle;
         }
 
-        /* Scroll Indicator (위치 수정됨) */
         .scroll-down {
-            position: absolute; 
-            bottom: 30px; 
-            left: 50%;
+            position: absolute; bottom: 30px; left: 50%;
             transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center;
             color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.8rem;
@@ -143,14 +140,13 @@
             background: var(--accent-gold); margin: 0 auto 10px auto;
         }
 
-        /* [NEW] Worldview Section Styles */
+        /* Worldview Section */
         .world-content {
             display: flex; align-items: center; gap: 50px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             padding: 50px; border-radius: 8px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
-            text-align: left;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05); text-align: left;
         }
         .world-img-frame {
             flex: 1; min-width: 300px; height: 400px;
@@ -159,22 +155,57 @@
         }
         .world-img-frame img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
         .world-img-frame:hover img { transform: scale(1.05); }
-        
         .world-text-box { flex: 1.2; }
-        .world-title {
-            font-size: 2rem; color: #2c241b; margin-bottom: 10px;
-            font-family: 'Gowun Batang', serif; font-weight: 700;
-        }
-        .world-eng-title {
-            font-family: 'Cinzel', serif; color: var(--accent-gold); 
-            font-size: 1rem; margin-bottom: 25px; display: block; letter-spacing: 2px;
-        }
-        .world-tagline {
-            font-size: 1.2rem; color: #8a6d5d; font-style: italic;
-            border-left: 3px solid var(--accent-gold); padding-left: 15px;
-            margin-bottom: 30px; font-weight: 600;
-        }
+        .world-title { font-size: 2rem; color: #2c241b; margin-bottom: 10px; font-family: 'Gowun Batang', serif; font-weight: 700; }
+        .world-eng-title { font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 1rem; margin-bottom: 25px; display: block; letter-spacing: 2px; }
+        .world-tagline { font-size: 1.2rem; color: #8a6d5d; font-style: italic; border-left: 3px solid var(--accent-gold); padding-left: 15px; margin-bottom: 30px; font-weight: 600; }
         .world-desc { font-size: 1rem; color: #5d4d42; line-height: 1.9; }
+
+        /* [FIXED] Relationship Chart Styles */
+        .rel-diagram {
+            position: relative; width: 100%; max-width: 800px; height: 600px; margin: 0 auto;
+        }
+        .rel-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .rel-line { stroke: var(--accent-gold); stroke-width: 1.5; stroke-dasharray: 5,5; opacity: 0.5; }
+        .rel-line.solid { stroke-dasharray: 0; opacity: 0.8; }
+        
+        .rel-node {
+            position: absolute; width: 100px; height: 100px;
+            border-radius: 50%; border: 3px solid var(--accent-gold);
+            background-color: #fff; background-size: cover; background-position: center;
+            z-index: 2; transition: 0.3s; cursor: pointer;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            display: flex; justify-content: center; align-items: flex-end;
+        }
+        .rel-node span {
+            display: block; width: 140%; text-align: center;
+            background: #fff; border: 1px solid var(--accent-gold);
+            padding: 5px 0; border-radius: 15px; font-size: 0.8rem;
+            font-weight: 700; transform: translateY(50%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: #4a3b32;
+        }
+
+        /* [FIXED] Node Specific Hover States to prevent jumping */
+        .rel-node:hover { z-index: 3; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); }
+        
+        .node-user { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border-color: var(--accent-rose); }
+        .node-user span { background: var(--accent-rose); color: #fff; border: none; }
+        .node-user:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+        .node-lowen { top: 10%; left: 50%; transform: translateX(-50%); }
+        .node-lowen:hover { transform: translateX(-50%) scale(1.1); }
+
+        .node-bellatrix { bottom: 15%; left: 15%; }
+        .node-bellatrix:hover { transform: scale(1.1); }
+
+        .node-kyric { bottom: 15%; right: 15%; }
+        .node-kyric:hover { transform: scale(1.1); }
+
+        .rel-label {
+            position: absolute; background: #fffcf5; padding: 2px 8px;
+            border: 1px solid #ddd; border-radius: 10px; font-size: 0.75rem;
+            color: #666; transform: translate(-50%, -50%); z-index: 2;
+        }
 
         /* Cards with 3D Tilt */
         .character-grid {
@@ -304,6 +335,10 @@
             body { --section-spacing: 80px; } 
             .hero-content h1 { font-size: 2.5rem; } .char-img-box { height: 350px; }
             .world-content { flex-direction: column; } .world-img-frame { width: 100%; height: 300px; }
+            .rel-diagram { height: 400px; }
+            .node-lowen { top: 5%; }
+            .node-bellatrix { bottom: 10%; left: 10%; }
+            .node-kyric { bottom: 10%; right: 10%; }
             .modal-body { flex-direction: column; } .modal-img-box { flex: auto; width: 100%; } 
             .modal-content { padding: 25px; } .chat-container { height: 250px; }
         }
@@ -434,6 +469,48 @@
                         황제의 죽음이 임박했다는 소문과 함께, 차기 황권을 차지하기 위한 '보이지 않는 전쟁'이 시작되었습니다.
                     </p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"><span>❖</span></div>
+
+    <section id="relationships">
+        <div class="container">
+            <h2 class="section-title reveal-up">The Constellation</h2>
+            <p style="margin-bottom: 50px; color: #6d5d53;">운명의 실타래로 엮인 그들과 당신의 관계</p>
+
+            <div class="rel-diagram reveal-up">
+                <svg class="rel-svg">
+                    <line x1="50%" y1="50%" x2="50%" y2="10%" class="rel-line" />
+                    <line x1="50%" y1="50%" x2="15%" y2="85%" class="rel-line" />
+                    <line x1="50%" y1="50%" x2="85%" y2="85%" class="rel-line" />
+                    <line x1="50%" y1="10%" x2="15%" y2="85%" class="rel-line solid" />
+                    <line x1="15%" y1="85%" x2="85%" y2="85%" class="rel-line solid" />
+                </svg>
+
+                <div class="rel-node node-user" title="You">
+                    <span style="background:var(--accent-rose); color:#fff; border:none;">YOU (주인공)</span>
+                </div>
+
+                <div class="rel-node node-lowen" style="background-image: url('로웬3.jpg');" title="Lowen">
+                    <span>로웬</span>
+                </div>
+                <div class="rel-label" style="top: 30%; left: 50%;">계약 / 호기심</div>
+
+                <div class="rel-node node-bellatrix" style="background-image: url('벨라트릭스2.jpeg');" title="Bellatrix">
+                    <span>벨라트릭스</span>
+                </div>
+                <div class="rel-label" style="top: 68%; left: 32%;">유혹 / 이용</div>
+
+                <div class="rel-node node-kyric" style="background-image: url('카이릭2.jpg');" title="Kyric">
+                    <span>카이릭</span>
+                </div>
+                <div class="rel-label" style="top: 68%; left: 68%;">정략결혼 / 보호</div>
+                
+                <div class="rel-label" style="top: 50%; left: 25%;">정적 / 견제</div>
+                <div class="rel-label" style="bottom: 10%; left: 50%;">경멸 / 무시</div>
+
             </div>
         </div>
     </section>
