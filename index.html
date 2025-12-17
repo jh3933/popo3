@@ -36,14 +36,43 @@
             color: #2c241b;
         }
 
+        /* Loading Screen */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fffcf5; z-index: 99999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .loader-circle {
+            width: 80px; height: 80px;
+            border: 2px solid transparent; border-top-color: var(--accent-gold);
+            border-bottom-color: var(--accent-rose); border-radius: 50%;
+            animation: spin 1.5s linear infinite; margin-bottom: 20px;
+        }
+        .loader-text {
+            font-family: 'Cinzel', serif; color: var(--accent-gold);
+            font-size: 1.2rem; letter-spacing: 5px; animation: pulse 2s infinite;
+        }
+        #loader.hidden { opacity: 0; visibility: hidden; }
+
         #ai-network-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             background: linear-gradient(135deg, #fffbf0 0%, #fff0f5 100%);
         }
 
-        .container { width: 90%; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; text-align: center; position: relative; }
         section { padding: var(--section-spacing) 0; position: relative; }
+
+        /* Section Divider */
+        .divider {
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto; width: 100%; max-width: 600px; opacity: 0.6;
+        }
+        .divider::before, .divider::after {
+            content: ''; height: 1px; flex: 1; background: var(--accent-gold);
+        }
+        .divider span { padding: 0 15px; color: var(--accent-gold); font-size: 1.5rem; }
 
         .reveal-up {
             opacity: 0; transform: translateY(60px);
@@ -51,9 +80,9 @@
         }
         .reveal-up.active { opacity: 1; transform: translateY(0); }
 
-        /* --- Hero Section & Typewriter Effect --- */
+        /* Hero Section */
         .hero-section {
-            height: 100vh;
+            height: 100vh; position: relative;
             display: flex; justify-content: center; align-items: center; text-align: center;
         }
 
@@ -63,34 +92,41 @@
             color: #2a2a2a;
             text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3); 
             background: -webkit-linear-gradient(45deg, #2c241b, #d4af37, #2c241b);
-            
-            /* [수정 완료] 표준 속성 추가 */
             -webkit-background-clip: text;
-            background-clip: text; 
-            
+            background-clip: text;
             -webkit-text-fill-color: transparent; 
             background-size: 200% auto;
             animation: shineText 5s linear infinite;
-            
-            /* 타자기 효과 커서 */
             border-right: 3px solid var(--accent-gold);
-            white-space: nowrap;
-            overflow: hidden;
-            display: inline-block;
-            width: 0; /* JS로 제어 */
-            height: 1.2em; vertical-align: middle;
+            white-space: nowrap; overflow: hidden; display: inline-block;
+            width: 0; height: 1.2em; vertical-align: middle;
         }
+
+        /* [MODIFIED] Scroll Indicator Position */
+        .scroll-down {
+            position: absolute; 
+            bottom: 30px; /* 화면 맨 아래에서 30px 위 */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.8rem;
+            opacity: 0; animation: fadeIn 1s ease 2s forwards, bounce 2s infinite 2s;
+            z-index: 10;
+        }
+        .scroll-down span { font-size: 1.5rem; margin-top: 5px; }
 
         @keyframes shineText { to { background-position: 200% center; } }
         @keyframes blinkCursor { from { border-right-color: var(--accent-gold); } to { border-right-color: transparent; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); } 40% { transform: translate(-50%, -10px); } 60% { transform: translate(-50%, -5px); } }
+        @keyframes fadeIn { to { opacity: 1; } }
 
         .hero-content p {
             font-size: 1.3rem; color: #6d5d53; max-width: 600px; margin: 0 auto;
             font-weight: 400;
             border-top: 1px solid var(--accent-gold); border-bottom: 1px solid var(--accent-gold);
             padding: 20px 0; display: inline-block;
-            opacity: 0; /* JS로 페이드인 */
-            transition: opacity 1s ease 0.5s;
+            opacity: 0; transition: opacity 1s ease 0.5s;
         }
         .hero-content p.show { opacity: 1; }
 
@@ -107,34 +143,32 @@
             background: var(--accent-gold); margin: 0 auto 10px auto;
         }
 
-        /* --- Character Cards --- */
+        /* --- Cards with 3D Tilt Effect --- */
         .character-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 50px; justify-content: center; 
+            gap: 50px; justify-content: center; perspective: 1000px;
         }
-
         .char-card {
             background: #fff; border: 1px solid var(--accent-gold);
             outline: 4px solid rgba(212, 175, 55, 0.1); outline-offset: -10px;
             border-radius: 4px; overflow: hidden; position: relative;
-            transition: all 0.5s ease; cursor: pointer;
+            transition: transform 0.1s ease-out, box-shadow 0.3s ease; 
+            cursor: pointer;
             box-shadow: 0 15px 30px rgba(74, 59, 50, 0.1);
+            transform-style: preserve-3d;
         }
         .char-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 30px 60px rgba(212, 175, 55, 0.3);
             outline-color: rgba(212, 175, 55, 0.6);
         }
-
-        .char-img-box { height: 420px; overflow: hidden; position: relative; background: #f4f1ea; }
+        .char-img-box { height: 420px; overflow: hidden; position: relative; background: #f4f1ea; pointer-events: none; }
         .char-img-box img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
         .char-card:hover .char-img-box img { transform: scale(1.05); filter: sepia(20%); }
-
-        .char-info { padding: 30px 20px; background: #fff; position: relative; z-index: 3; }
+        .char-info { padding: 30px 20px; background: #fff; position: relative; z-index: 3; pointer-events: none; }
         .char-info h3 { font-size: 1.5rem; margin-bottom: 10px; color: #2c241b; font-weight: 700; }
         .char-info p { color: #8c7b70; font-size: 0.95rem; font-family: 'Gowun Batang', serif; }
 
-        /* --- Video & Contact --- */
+        /* Video & Contact */
         .video-wrapper {
             width: 100%; border-radius: 4px; overflow: hidden; position: relative;
             border: 8px solid #fff; outline: 1px solid var(--accent-gold);
@@ -165,7 +199,7 @@
         .contact-link:hover { color: #fff; border-color: var(--accent-gold); }
         .contact-link:hover::before { width: 100%; }
 
-        /* --- Modal Popup (Affinity & Chat System Added) --- */
+        /* Modal */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(44, 36, 27, 0.6); z-index: 9999;
@@ -199,7 +233,6 @@
         .close-btn { position: absolute; top: 20px; right: 25px; font-size: 2rem; cursor: pointer; color: #d4af37; transition: 0.3s; z-index: 100; }
         .close-btn:hover { color: #2c241b; transform: rotate(90deg); }
 
-        /* [NEW] Buttons Area */
         .interaction-buttons { margin-top: 20px; display: flex; gap: 15px; align-items: center; }
         .action-btn {
             background: transparent; border: 1px solid var(--accent-gold);
@@ -220,51 +253,25 @@
         }
         .speech-bubble.show { opacity: 1; top: -60px; }
 
-        /* [NEW] Chat Interface Styles */
         .chat-container {
-            display: none; /* 기본 숨김 */
-            flex-direction: column;
-            height: 300px;
-            margin-top: 20px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            background: rgba(255, 255, 255, 0.5);
-            border-radius: 8px;
-            overflow: hidden;
+            display: none; flex-direction: column; height: 300px;
+            margin-top: 20px; border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(255, 255, 255, 0.5); border-radius: 8px; overflow: hidden;
         }
         .chat-container.active { display: flex; }
-        
-        .chat-log {
-            flex: 1; padding: 15px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px;
-            font-size: 0.95rem;
-        }
+        .chat-log { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.95rem; }
         .chat-message { max-width: 80%; padding: 8px 12px; border-radius: 12px; line-height: 1.4; }
         .chat-message.user { align-self: flex-end; background: var(--accent-rose); color: white; border-bottom-right-radius: 0; }
         .chat-message.char { align-self: flex-start; background: #fff; border: 1px solid var(--accent-gold); border-bottom-left-radius: 0; }
-        
-        .chat-input-area {
-            display: flex; border-top: 1px solid rgba(212, 175, 55, 0.3);
-        }
-        .chat-input {
-            flex: 1; border: none; padding: 15px; background: transparent;
-            font-family: 'Gowun Batang', serif; outline: none;
-        }
-        .chat-send-btn {
-            border: none; background: var(--accent-gold); color: white;
-            padding: 0 20px; cursor: pointer; font-family: 'Cinzel', serif;
-        }
+        .chat-input-area { display: flex; border-top: 1px solid rgba(212, 175, 55, 0.3); }
+        .chat-input { flex: 1; border: none; padding: 15px; background: transparent; font-family: 'Gowun Batang', serif; outline: none; }
+        .chat-send-btn { border: none; background: var(--accent-gold); color: white; padding: 0 20px; cursor: pointer; font-family: 'Cinzel', serif; }
 
-        /* Mobile Adjustments (수정됨) */
         @media (max-width: 768px) {
-            :root { --section-spacing: 80px; } /* [수정 완료] 변수를 :root 안으로 이동 */
-            
-            .hero-content h1 { font-size: 2.5rem; }
-            .char-img-box { height: 350px; }
-            
-            .modal-body { flex-direction: column; } 
-            .modal-img-box { flex: auto; width: 100%; } 
-            .modal-content { padding: 25px; }
-            .chat-container { height: 250px; }
+            body { --section-spacing: 80px; } 
+            .hero-content h1 { font-size: 2.5rem; } .char-img-box { height: 350px; }
+            .modal-body { flex-direction: column; } .modal-img-box { flex: auto; width: 100%; } 
+            .modal-content { padding: 25px; } .chat-container { height: 250px; }
         }
 
         .music-control {
@@ -280,113 +287,155 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes heartBeat { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
 
-        /* Magic Sparkle Cursor */
         .magic-particle {
             position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
             background: radial-gradient(circle, #fff 10%, var(--accent-gold) 100%);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: particleFade 1s forwards;
+            border-radius: 50%; transform: translate(-50%, -50%); animation: particleFade 1s forwards;
         }
-        @keyframes particleFade {
-            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, 20px) scale(0); }
+        @keyframes particleFade { 0% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, 20px) scale(0); } }
+
+        /* Artifact Styles */
+        .artifact {
+            position: absolute; font-size: 2rem; opacity: 0.3; transition: all 0.5s; cursor: pointer;
+            filter: grayscale(100%); animation: floatArtifact 3s ease-in-out infinite; z-index: 50;
+        }
+        .artifact:hover { opacity: 1; filter: grayscale(0%) drop-shadow(0 0 10px gold); transform: scale(1.2); }
+        .artifact.found { display: none; }
+        
+        @keyframes floatArtifact {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .collection-counter {
+            position: fixed; bottom: 30px; left: 30px; background: rgba(255,255,255,0.9);
+            border: 2px solid var(--accent-gold); padding: 10px 20px; border-radius: 30px;
+            font-family: 'Cinzel', serif; color: var(--accent-gold); font-weight: 700;
+            z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Secret Modal */
+        #secret-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8); z-index: 10001;
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.5s;
+        }
+        #secret-modal.show { display: flex; opacity: 1; }
+        .secret-content {
+            background: #2c241b; color: #d4af37; padding: 50px; border: 2px solid var(--accent-gold);
+            text-align: center; max-width: 600px; border-radius: 10px; position: relative;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.5);
+        }
+        .secret-content h2 { font-family: 'Cinzel', serif; margin-bottom: 20px; color: #fff; }
+        .secret-content p { font-family: 'Gowun Batang', serif; font-size: 1.2rem; line-height: 1.8; }
+        .secret-icon { font-size: 4rem; margin-bottom: 20px; display: block; animation: pulse 2s infinite; }
+
+        .click-ripple {
+            position: fixed; border-radius: 50%; border: 2px solid var(--accent-gold);
+            transform: translate(-50%, -50%) scale(0); pointer-events: none; z-index: 9999;
+            animation: rippleAnim 0.6s linear forwards;
+        }
+        @keyframes rippleAnim {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 100px; height: 100px; opacity: 0; }
         }
     </style>
 </head>
 <body>
 
+    <div id="loader">
+        <div class="loader-circle"></div>
+        <div class="loader-text">Opening the Gate...</div>
+    </div>
+
+    <div class="collection-counter">Artifacts: <span id="artifact-count">0</span> / 3</div>
+
     <canvas id="ai-network-canvas"></canvas>
 
     <audio id="bgm-audio" loop>
         <source src="Whispers of Starlight.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
     </audio>
+    <audio id="sfx-hover"> <source src="hover.mp3" type="audio/mp3"> </audio>
+    <audio id="sfx-click"> <source src="click.mp3" type="audio/mp3"> </audio>
 
     <div class="music-control" onclick="toggleMusic()" title="Play Music">
         <span id="music-icon">♫</span>
     </div>
 
+    <div id="secret-modal" onclick="closeSecretModal()">
+        <div class="secret-content" onclick="event.stopPropagation()">
+            <span class="secret-icon" id="secret-icon"></span>
+            <h2 id="secret-title"></h2>
+            <p id="secret-desc"></p>
+            <button class="action-btn" onclick="closeSecretModal()" style="margin-top:20px; border-color:#fff; color:#fff;">닫기</button>
+        </div>
+    </div>
+
     <section class="hero-section">
+        <div class="artifact" id="artifact-1" style="top: 20%; left: 10%;" onclick="foundArtifact(1)">🗝️</div>
+
         <div class="container hero-content">
             <h1 id="typewriter-text">Atelier of Illusions</h1>
             <p id="hero-subtitle">현실의 경계를 넘어, 마침내 도달한 당신만의 세계</p>
         </div>
+        <div class="scroll-down">Scroll Down<span>↓</span></div>
     </section>
+
+    <div class="divider"><span>❖</span></div>
 
     <section id="characters">
         <div class="container">
             <h2 class="section-title reveal-up">Characters</h2>
             <div class="character-grid">
                 
-                <div class="char-card reveal-up" style="transition-delay: 0.2s;" 
-                     onclick="openModal(this, 'lowen')"
-                     data-reaction="흐음, 흥미롭군요. 당신의 감정을 분석해봐도 될까요?"
-                     data-detail="이름: 로웬 드 아르카디아
-                     나이: 22세
-                     소개: 제국 역사상 최연소 마법사.
-                     
-                     늘 나른하고 여유로운 미소를 띠고 있으며, 누구에게나 다정하고 친절해 보입니다. 하지만 그 속은 매우 이성적이고 계산적입니다.">
-                    <div class="char-img-box">
-                        <img src="로웬3.jpg" alt="로웬 이미지">
-                    </div>
-                    <div class="char-info">
-                        <h3>로웬</h3>
-                        <p>역사상 최연소로 마탑주 자리에 오른 천재 마법사</p>
-                    </div>
+                <div class="char-card reveal-up" onclick="openModal(this, 'lowen')" data-reaction="흐음, 흥미롭군요. 당신의 감정을 분석해봐도 될까요?" data-detail="이름: 로웬 드 아르카디아
+                나이: 22세
+                소개: 제국 역사상 최연소 마법사.
+                
+                늘 나른하고 여유로운 미소를 띠고 있으며, 누구에게나 다정하고 친절해 보입니다. 하지만 그 속은 매우 이성적이고 계산적입니다.">
+                    <div class="char-img-box"><img src="로웬3.jpg" alt="로웬"></div>
+                    <div class="char-info"><h3>로웬</h3><p>역사상 최연소로 마탑주 자리에 오른 천재 마법사</p></div>
                 </div>
 
-                <div class="char-card reveal-up" style="transition-delay: 0.4s;"
-                     onclick="openModal(this, 'bellatrix')"
-                     data-reaction="후후, 제 매력에 빠지셨나요? 영광인 줄 아세요."
-                     data-detail="이름: 벨라트릭스 드 로제
-                     나이: 20세
-                     소개: 제국 막내 황녀.
-                     
-                     천사 같은 외모 뒤에 황위 계승을 노리는 야망을 품고 있습니다. 당신을 자신의 편으로 만들기 위해 달콤하게 접근합니다.">
-                    <div class="char-img-box">
-                         <img src="벨라트릭스2.jpeg" alt="벨라트릭스 이미지">
-                    </div>
-                    <div class="char-info">
-                        <h3>벨라트릭스</h3>
-                        <p>황제와 사교계의 총애를 한 몸에 받는 막내 황녀</p>
-                    </div>
+                <div class="char-card reveal-up" onclick="openModal(this, 'bellatrix')" data-reaction="후후, 제 매력에 빠지셨나요? 영광인 줄 아세요." data-detail="이름: 벨라트릭스 드 로제
+                나이: 20세
+                소개: 제국 막내 황녀.
+                
+                천사 같은 외모 뒤에 황위 계승을 노리는 야망을 품고 있습니다. 당신을 자신의 편으로 만들기 위해 달콤하게 접근합니다.">
+                    <div class="char-img-box"><img src="벨라트릭스2.jpeg" alt="벨라트릭스"></div>
+                    <div class="char-info"><h3>벨라트릭스</h3><p>황제와 사교계의 총애를 한 몸에 받는 막내 황녀</p></div>
                 </div>
 
-                <div class="char-card reveal-up" style="transition-delay: 0.6s;"
-                     onclick="openModal(this, 'kyric')"
-                     data-reaction="...쓸데없는 짓을. 뭐, 나쁘진 않군."
-                     data-detail="이름: 카이릭 폰 에크하르트
-                     나이: 28세
-                     소개: 북부의 냉혈한 대공.
-                     
-                     정략결혼한 당신에게 거리를 두지만, 위기의 순간에는 누구보다 먼저 나타나 목숨 걸고 당신을 지켜냅니다.">
-                    <div class="char-img-box">
-                         <img src="카이릭2.jpg" alt="카이릭 이미지">
-                    </div>
-                    <div class="char-info">
-                        <h3>카이릭</h3>
-                        <p>북부의 지배자이자, 토벌에 미쳐사는 냉혈한 대공</p>
-                    </div>
+                <div class="char-card reveal-up" onclick="openModal(this, 'kyric')" data-reaction="...쓸데없는 짓을. 뭐, 나쁘진 않군." data-detail="이름: 카이릭 폰 에크하르트
+                나이: 28세
+                소개: 북부의 냉혈한 대공.
+                
+                정략결혼한 당신에게 거리를 두지만, 위기의 순간에는 누구보다 먼저 나타나 목숨 걸고 당신을 지켜냅니다.">
+                    <div class="char-img-box"><img src="카이릭2.jpg" alt="카이릭"></div>
+                    <div class="char-info"><h3>카이릭</h3><p>북부의 지배자이자, 토벌에 미쳐사는 냉혈한 대공</p></div>
                 </div>
 
             </div>
         </div>
     </section>
 
+    <div class="divider"><span>❖</span></div>
+
     <section id="video">
         <div class="container">
              <h2 class="section-title reveal-up">Cinematic Film</h2>
              <div class="video-wrapper reveal-up">
-                 <div class="video-placeholder">
-                     <p style="color: #8c7b70;">[ VIDEO PLACEHOLDER AREA ]</p>
-                     <div class="play-button-overlay">❖</div>
-                 </div>
+                 <div class="video-placeholder"><p style="color: #8c7b70;">[ VIDEO PLACEHOLDER AREA ]</p><div class="play-button-overlay">❖</div></div>
+                 <div class="artifact" id="artifact-2" style="bottom: 20px; right: 20px;" onclick="foundArtifact(2)">💍</div>
              </div>
         </div>
     </section>
 
+    <div class="divider"><span>❖</span></div>
+
     <section class="contact-section reveal-up">
+        <div class="artifact" id="artifact-3" style="top: 20px; right: 10%;" onclick="foundArtifact(3)">📜</div>
+
         <div class="container">
             <h2 class="section-title">Invitation</h2>
             <p style="margin-bottom: 20px; color: #6d5d53;">당신을 위한 특별한 이야기가 기다리고 있습니다.</p>
@@ -398,34 +447,21 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <span class="close-btn" onclick="closeModal()">✕</span>
             <div class="modal-body">
-                <div class="modal-img-box">
-                    <img id="modal-img" src="" alt="상세 이미지">
-                </div>
+                <div class="modal-img-box"><img id="modal-img" src="" alt="상세 이미지"></div>
                 <div class="modal-text">
                     <h3 id="modal-title">캐릭터 이름</h3>
                     <p id="modal-desc" class="modal-desc-short">짧은 설명</p>
-                    
-                    <div id="info-mode">
-                        <p id="modal-detail" class="modal-detail-text">상세 설명이 들어갑니다.</p>
-                    </div>
-
+                    <div id="info-mode"><p id="modal-detail" class="modal-detail-text">상세 설명</p></div>
                     <div id="chat-mode" class="chat-container">
-                        <div class="chat-log" id="chat-log">
-                            <div class="chat-message char">무슨 용건이지?</div>
-                        </div>
+                        <div class="chat-log" id="chat-log"><div class="chat-message char">무슨 용건이지?</div></div>
                         <div class="chat-input-area">
                             <input type="text" id="chat-input" class="chat-input" placeholder="말을 걸어보세요..." onkeypress="handleKeyPress(event)">
                             <button class="chat-send-btn" onclick="sendMessage()">Send</button>
                         </div>
                     </div>
-                    
                     <div class="interaction-buttons">
-                        <button class="action-btn" id="like-btn" onclick="toggleLike()">
-                            ♥ 호감 표시
-                        </button>
-                        <button class="action-btn" id="chat-btn" onclick="toggleChatMode()">
-                            💬 대화하기
-                        </button>
+                        <button class="action-btn" id="like-btn" onclick="toggleLike()">♥ 호감 표시</button>
+                        <button class="action-btn" id="chat-btn" onclick="toggleChatMode()">💬 대화하기</button>
                         <div class="speech-bubble" id="speech-bubble"></div>
                     </div>
                 </div>
@@ -434,127 +470,69 @@
     </div>
 
     <script>
-        /* --- 1. Particles --- */
+        const sfxHover = document.getElementById('sfx-hover');
+        const sfxClick = document.getElementById('sfx-click');
+        function playSfx(audio) { if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); } }
+
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => { loader.classList.add('hidden'); setTimeout(startTypewriter, 500); }, 1500);
+        });
+
         const canvas = document.getElementById('ai-network-canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        let particlesArray;
-        const numberOfParticles = 80;
-        const connectionDistance = 150;
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particlesArray; const numberOfParticles = 80; const connectionDistance = 150;
         let mouse = { x: null, y: null, radius: 200 }
+        
         window.addEventListener('mousemove', function(event) {
             mouse.x = event.x; mouse.y = event.y; createMagicSparkle(event.x, event.y);
+            
+            // 3D Tilt Effect
+            document.querySelectorAll('.char-card').forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = event.clientX - rect.left; const y = event.clientY - rect.top;
+                if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                    const centerX = rect.width / 2; const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -10; const rotateY = ((x - centerX) / centerX) * 10;
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+                } else { card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)'; }
+            });
         });
+        window.addEventListener('mouseout', function() { document.querySelectorAll('.char-card').forEach(card => { card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)'; }); });
+        
+        window.addEventListener('click', function(e) {
+            playSfx(sfxClick); 
+            const ripple = document.createElement('div'); ripple.classList.add('click-ripple');
+            ripple.style.left = e.clientX + 'px'; ripple.style.top = e.clientY + 'px';
+            document.body.appendChild(ripple); setTimeout(() => ripple.remove(), 600);
+        });
+        document.querySelectorAll('button, a, .char-card').forEach(el => { el.addEventListener('mouseenter', () => playSfx(sfxHover)); });
+
+        /* Particles Logic (Same as before) */
         class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
-                this.directionX = (Math.random() * 0.2) - 0.1; this.directionY = (Math.random() * 0.2) - 0.1;
-                this.size = (Math.random() * 3) + 1; this.opacity = Math.random() * 0.5 + 0.2;
-            }
-            draw() {
-                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')'; ctx.fill();
-            }
-            update() {
-                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx*dx + dy*dy);
-                if (distance < mouse.radius) {
-                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 0.5;
-                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 0.5;
-                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 0.5;
-                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 0.5;
-                }
-                this.x += this.directionX; this.y += this.directionY;
-                if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0;
-                this.opacity += (Math.random() * 0.02) - 0.01;
-                if(this.opacity < 0.1) this.opacity = 0.1; if(this.opacity > 0.8) this.opacity = 0.8;
-                this.draw();
-            }
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.directionX = (Math.random() * 0.2) - 0.1; this.directionY = (Math.random() * 0.2) - 0.1; this.size = (Math.random() * 3) + 1; this.opacity = Math.random() * 0.5 + 0.2; }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')'; ctx.fill(); }
+            update() { this.x += this.directionX; this.y += this.directionY; if (this.x < 0) this.x = canvas.width; if (this.x > canvas.width) this.x = 0; if (this.y < 0) this.y = canvas.height; if (this.y > canvas.height) this.y = 0; this.opacity += (Math.random() * 0.02) - 0.01; if(this.opacity < 0.1) this.opacity = 0.1; if(this.opacity > 0.8) this.opacity = 0.8; this.draw(); }
         }
         function init() { particlesArray = []; for (let i = 0; i < numberOfParticles; i++) { particlesArray.push(new Particle()); } }
         function connect() {
-            for (let a = 0; a < particlesArray.length; a++) {
-                for (let b = a; b < particlesArray.length; b++) {
-                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
-                        + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
-                    if (distance < (connectionDistance * connectionDistance)) {
-                        ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)'; ctx.lineWidth = 0.5;
-                        ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke();
-                    }
-                }
-            }
+            for (let a = 0; a < particlesArray.length; a++) { for (let b = a; b < particlesArray.length; b++) { let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y)); if (distance < (connectionDistance * connectionDistance)) { ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)'; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(particlesArray[a].x, particlesArray[a].y); ctx.lineTo(particlesArray[b].x, particlesArray[b].y); ctx.stroke(); } } }
         }
-        function animate() {
-            requestAnimationFrame(animate); ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect();
-        }
-        window.addEventListener('resize', function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); });
-        init(); animate();
+        function animate() { requestAnimationFrame(animate); ctx.clearRect(0, 0, canvas.width, canvas.height); for (let i = 0; i < particlesArray.length; i++) { particlesArray[i].update(); } connect(); }
+        window.addEventListener('resize', function() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; init(); }); init(); animate();
 
-        /* --- 2. Magic Sparkle --- */
-        function createMagicSparkle(x, y) {
-            if(Math.random() > 0.3) return;
-            const sparkle = document.createElement('div'); sparkle.classList.add('magic-particle');
-            const size = Math.random() * 4 + 2;
-            const offsetX = (Math.random() - 0.5) * 15; const offsetY = (Math.random() - 0.5) * 15;
-            sparkle.style.width = `${size}px`; sparkle.style.height = `${size}px`;
-            sparkle.style.left = `${x + offsetX}px`; sparkle.style.top = `${y + offsetY}px`;
-            const colors = ['#d4af37', '#e0bfb8', '#ffffff'];
-            sparkle.style.background = colors[Math.floor(Math.random() * colors.length)];
-            document.body.appendChild(sparkle);
-            setTimeout(() => { sparkle.remove(); }, 1000);
-        }
+        function createMagicSparkle(x, y) { if(Math.random() > 0.3) return; const sparkle = document.createElement('div'); sparkle.classList.add('magic-particle'); const size = Math.random() * 4 + 2; const offsetX = (Math.random() - 0.5) * 15; const offsetY = (Math.random() - 0.5) * 15; sparkle.style.width = `${size}px`; sparkle.style.height = `${size}px`; sparkle.style.left = `${x + offsetX}px`; sparkle.style.top = `${y + offsetY}px`; const colors = ['#d4af37', '#e0bfb8', '#ffffff']; sparkle.style.background = colors[Math.floor(Math.random() * colors.length)]; document.body.appendChild(sparkle); setTimeout(() => { sparkle.remove(); }, 1000); }
+        function startTypewriter() { const titleElement = document.getElementById('typewriter-text'); const subtitleElement = document.getElementById('hero-subtitle'); const originalText = titleElement.innerText; titleElement.innerText = ''; titleElement.style.width = 'auto'; let i = 0; function typeWriter() { if (i < originalText.length) { titleElement.innerHTML += originalText.charAt(i); i++; setTimeout(typeWriter, 120); } else { titleElement.style.borderRight = "3px solid transparent"; titleElement.style.animation = "blinkCursor 0.7s infinite"; subtitleElement.classList.add('show'); } } typeWriter(); }
 
-        /* --- 3. Typewriter --- */
-        document.addEventListener('DOMContentLoaded', () => {
-            const titleElement = document.getElementById('typewriter-text');
-            const subtitleElement = document.getElementById('hero-subtitle');
-            const originalText = titleElement.innerText;
-            titleElement.innerText = ''; titleElement.style.width = 'auto';
-            let i = 0;
-            function typeWriter() {
-                if (i < originalText.length) {
-                    titleElement.innerHTML += originalText.charAt(i); i++;
-                    setTimeout(typeWriter, 120);
-                } else {
-                    titleElement.style.borderRight = "3px solid transparent";
-                    titleElement.style.animation = "blinkCursor 0.7s infinite";
-                    subtitleElement.classList.add('show');
-                }
-            }
-            setTimeout(typeWriter, 500);
-        });
-
-        /* --- Scroll Reveal --- */
         const revealElements = document.querySelectorAll('.reveal-up');
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-        }, { threshold: 0.1 });
+        const revealObserver = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); }); }, { threshold: 0.1 });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        /* --- Global Variables for Modal --- */
-        const modal = document.getElementById('char-modal');
-        const modalImg = document.getElementById('modal-img');
-        const modalTitle = document.getElementById('modal-title');
-        const modalDesc = document.getElementById('modal-desc');
-        const modalDetail = document.getElementById('modal-detail');
-        const likeBtn = document.getElementById('like-btn');
-        const speechBubble = document.getElementById('speech-bubble');
-        
-        // Chat Elements
-        const infoMode = document.getElementById('info-mode');
-        const chatMode = document.getElementById('chat-mode');
-        const chatLog = document.getElementById('chat-log');
-        const chatInput = document.getElementById('chat-input');
-        const chatBtn = document.getElementById('chat-btn');
+        /* Modal & Chat */
+        const modal = document.getElementById('char-modal'); const modalImg = document.getElementById('modal-img'); const modalTitle = document.getElementById('modal-title'); const modalDesc = document.getElementById('modal-desc'); const modalDetail = document.getElementById('modal-detail'); const likeBtn = document.getElementById('like-btn'); const speechBubble = document.getElementById('speech-bubble'); const infoMode = document.getElementById('info-mode'); const chatMode = document.getElementById('chat-mode'); const chatLog = document.getElementById('chat-log'); const chatInput = document.getElementById('chat-input'); const chatBtn = document.getElementById('chat-btn'); let currentReaction = ""; let currentCharId = ""; 
 
-        let currentReaction = ""; 
-        let currentCharId = ""; // 'lowen', 'bellatrix', 'kyric'
-
-        // Character Dialogues Database
+        /* [EXPANDED] Character Dialogues */
         const responses = {
             lowen: {
                 greeting: "어서오세요. 마탑에는 무슨 일로?",
@@ -563,7 +541,16 @@
                     "안녕": "반갑습니다. 별들이 당신의 방문을 예견했었죠.",
                     "좋아해": "사랑... 인간의 가장 불안정하고 흥미로운 감정이군요.",
                     "취미": "별을 관측하거나 고대 마법서를 해독하는 것입니다.",
-                    "이름": "로웬 드 아르카디아. 편하게 로웬이라 부르세요."
+                    "이름": "로웬 드 아르카디아. 편하게 로웬이라 부르세요.",
+                    "마법": "마법은 단순한 힘이 아닙니다. 세계의 이치를 거스르는 예술이죠.",
+                    "별": "저 하늘의 별들은 모든 운명을 알고 있습니다. 당신의 운명까지도.",
+                    "비밀": "저에게도 알려지지 않은 비밀이 하나쯤은 있어야 매력적이지 않겠습니까?",
+                    "감정": "당신의 감정은... 마치 폭풍우 치는 바다 같군요. 흥미로워요.",
+                    "커피": "마법으로 내린 커피입니다. 잠이 오지 않을 테니 주의하세요.",
+                    "연구": "지금은 고대 룬 문자를 연구 중입니다. 방해하지 말아주세요.",
+                    "피곤해": "그럴 땐 마탑 꼭대기에서 바람을 쐬는 게 최고죠.",
+                    "과거": "제 과거가 궁금하신가요? 후후, 그건 대가가 필요할 텐데요.",
+                    "산책": "별빛 아래를 걷는 산책이라면 언제든 환영입니다."
                 }
             },
             bellatrix: {
@@ -573,7 +560,16 @@
                     "안녕": "안녕하세요? 제 드레스 어때요? 오늘을 위해 준비했어요.",
                     "좋아해": "어머, 벌써요? 줄을 서세요. 제 팬은 제국에 넘쳐나니까요.",
                     "취미": "티타임을 즐기거나... 제국의 정세를 살피는 일이죠.",
-                    "이름": "벨라트릭스 드 로제. 이 제국의 가장 빛나는 별이죠."
+                    "이름": "벨라트릭스 드 로제. 이 제국의 가장 빛나는 별이죠.",
+                    "드레스": "이건 황실 전속 디자이너가 저만을 위해 만든 거예요. 아름답죠?",
+                    "황제": "아바마마는 저를 가장 아끼시죠. 하지만 그것만으론 부족해요.",
+                    "보석": "다이아몬드보다 빛나는 건 오직 저뿐이에요. 그렇지 않나요?",
+                    "소문": "저에 대한 소문이요? 글쎄요, 나쁜 소문은 믿지 마세요.",
+                    "파티": "다음 황실 무도회 때, 제 파트너가 되어주시겠어요?",
+                    "선물": "어머, 빈손으로 오신 건 아니죠? 저는 반짝이는 걸 좋아해요.",
+                    "경쟁자": "제 앞길을 막는 자는... 조용히 사라지게 될 거예요.",
+                    "이상형": "제 야망을 이뤄줄 수 있는, 능력 있고 헌신적인 사람이죠.",
+                    "디저트": "달콤한 마카롱이 먹고 싶네요. 사다 주실래요?"
                 }
             },
             kyric: {
@@ -583,129 +579,62 @@
                     "안녕": "그래. 용건만 간단히 해라.",
                     "좋아해": "......(얼굴을 붉히며 고개를 돌린다) 헛소리하지 마라.",
                     "취미": "마수 토벌. 검을 닦는 것. 그 외엔 없다.",
-                    "이름": "카이릭 폰 에크하르트. 북부의 주인이다."
+                    "이름": "카이릭 폰 에크하르트. 북부의 주인이다.",
+                    "검": "검은 거짓말을 하지 않아. 오직 실력만이 진실이지.",
+                    "북부": "이곳은 춥고 척박하다. 네가 있을 곳이 못 돼.",
+                    "추워": "......(묵묵히 자신의 망토를 벗어준다) 입어라.",
+                    "마수": "걱정 마라. 내 검이 닿는 곳에 마수는 없다.",
+                    "약속": "한번 뱉은 말은 반드시 지킨다. 그게 북부의 방식이다.",
+                    "훈련": "매일 새벽 연무장에 나간다. 나태함은 죽음과 직결되니까.",
+                    "영지": "내 백성들은 내가 지킨다. 그게 영주의 의무다.",
+                    "상처": "이정도 상처는 아무것도 아니다. 신경 쓰지 마라.",
+                    "술": "독한 북부 술을 마셔봤나? 넌 한 모금이면 쓰러질 거다."
                 }
             }
         };
 
         function openModal(element, charId) {
-            const imgSrc = element.querySelector('img').src;
-            const title = element.querySelector('h3').innerText;
-            const desc = element.querySelector('p').innerText;
-            const detail = element.getAttribute('data-detail');
-            
-            currentReaction = element.getAttribute('data-reaction');
-            currentCharId = charId;
-
-            modalImg.src = imgSrc;
-            modalTitle.innerText = title;
-            modalDesc.innerText = desc;
-            modalDetail.innerText = detail;
-
-            // Reset UI
-            likeBtn.classList.remove('liked');
-            speechBubble.classList.remove('show');
-            speechBubble.innerText = "";
-            
-            // Show Info Mode first
-            infoMode.style.display = 'block';
-            chatMode.style.display = 'none';
-            chatMode.classList.remove('active');
-            chatBtn.innerText = "💬 대화하기";
-
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
+            const imgSrc = element.querySelector('img').src; const title = element.querySelector('h3').innerText; const desc = element.querySelector('p').innerText; const detail = element.getAttribute('data-detail'); currentReaction = element.getAttribute('data-reaction'); currentCharId = charId; modalImg.src = imgSrc; modalTitle.innerText = title; modalDesc.innerText = desc; modalDetail.innerText = detail; likeBtn.classList.remove('liked'); speechBubble.classList.remove('show'); speechBubble.innerText = ""; infoMode.style.display = 'block'; chatMode.style.display = 'none'; chatMode.classList.remove('active'); chatBtn.innerText = "💬 대화하기"; modal.classList.add('show'); document.body.style.overflow = 'hidden';
         }
-
-        function closeModal() {
-            modal.classList.remove('show');
-            document.body.style.overflow = 'auto';
-        }
-
-        // --- Affinity Function ---
-        function toggleLike() {
-            if (!likeBtn.classList.contains('liked')) {
-                likeBtn.classList.add('liked');
-                speechBubble.innerText = currentReaction;
-                speechBubble.classList.add('show');
-                setTimeout(() => { speechBubble.classList.remove('show'); }, 3000);
-            }
-        }
-
-        // --- Chat Functionality ---
+        function closeModal() { modal.classList.remove('show'); document.body.style.overflow = 'auto'; }
+        function toggleLike() { if (!likeBtn.classList.contains('liked')) { likeBtn.classList.add('liked'); speechBubble.innerText = currentReaction; speechBubble.classList.add('show'); setTimeout(() => { speechBubble.classList.remove('show'); }, 3000); } }
         function toggleChatMode() {
-            if (chatMode.style.display === 'none' || chatMode.style.display === '') {
-                // Switch to Chat
-                infoMode.style.display = 'none';
-                chatMode.style.display = 'flex';
-                chatMode.classList.add('active');
-                chatBtn.innerText = "📜 정보 보기";
-                
-                // Greeting Message
-                chatLog.innerHTML = `<div class="chat-message char">${responses[currentCharId].greeting}</div>`;
-            } else {
-                // Switch back to Info
-                infoMode.style.display = 'block';
-                chatMode.style.display = 'none';
-                chatMode.classList.remove('active');
-                chatBtn.innerText = "💬 대화하기";
-            }
+            if (chatMode.style.display === 'none' || chatMode.style.display === '') { infoMode.style.display = 'none'; chatMode.style.display = 'flex'; chatMode.classList.add('active'); chatBtn.innerText = "📜 정보 보기"; chatLog.innerHTML = `<div class="chat-message char">${responses[currentCharId].greeting}</div>`; } 
+            else { infoMode.style.display = 'block'; chatMode.style.display = 'none'; chatMode.classList.remove('active'); chatBtn.innerText = "💬 대화하기"; }
         }
-
         function sendMessage() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            // Add User Message
-            addMessage(text, 'user');
-            chatInput.value = '';
-
-            // Simulate Typing Delay
+            const text = chatInput.value.trim(); if (!text) return; addMessage(text, 'user'); chatInput.value = '';
             setTimeout(() => {
-                const charData = responses[currentCharId];
-                let reply = charData.default;
-
-                // Simple Keyword Matching
-                for (const key in charData.keywords) {
-                    if (text.includes(key)) {
-                        reply = charData.keywords[key];
-                        break;
-                    }
-                }
-                addMessage(reply, 'char');
+                const charData = responses[currentCharId]; let reply = charData.default; for (const key in charData.keywords) { if (text.includes(key)) { reply = charData.keywords[key]; break; } } addMessage(reply, 'char');
             }, 600);
         }
+        function addMessage(text, sender) { const msgDiv = document.createElement('div'); msgDiv.classList.add('chat-message', sender); msgDiv.innerText = text; chatLog.appendChild(msgDiv); chatLog.scrollTop = chatLog.scrollHeight; }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-        function addMessage(text, sender) {
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('chat-message', sender);
-            msgDiv.innerText = text;
-            chatLog.appendChild(msgDiv);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        /* --- Music --- */
-        const audio = document.getElementById('bgm-audio');
-        const musicIcon = document.getElementById('music-icon');
-        let isPlaying = false;
+        /* Music */
+        const audio = document.getElementById('bgm-audio'); const musicIcon = document.getElementById('music-icon'); let isPlaying = false;
         function toggleMusic() {
-            if (isPlaying) {
-                audio.pause(); isPlaying = false; musicIcon.innerText = '♫';
-                document.querySelector('.music-control').classList.remove('playing');
-            } else {
-                audio.play().catch(() => alert("클릭 후 다시 시도해주세요."));
-                isPlaying = true; musicIcon.innerText = '❚❚';
-                document.querySelector('.music-control').classList.add('playing');
-            }
+            if (isPlaying) { audio.pause(); isPlaying = false; musicIcon.innerText = '♫'; document.querySelector('.music-control').classList.remove('playing'); } 
+            else { audio.play().catch(() => alert("클릭 후 다시 시도해주세요.")); isPlaying = true; musicIcon.innerText = '❚❚'; document.querySelector('.music-control').classList.add('playing'); }
         }
+
+        /* Artifacts */
+        let foundCount = 0; const totalArtifacts = 3;
+        const secretModal = document.getElementById('secret-modal'); const secretIcon = document.getElementById('secret-icon'); const secretTitle = document.getElementById('secret-title'); const secretDesc = document.getElementById('secret-desc'); const counterDisplay = document.getElementById('artifact-count');
+        const secretData = {
+            1: { icon: "🗝️", title: "차원의 열쇠", desc: "이 세계와 당신의 세계를 잇는 유일한 매개체입니다. 이제 언제든 이곳으로 돌아올 수 있습니다." },
+            2: { icon: "💍", title: "부서진 서약의 반지", desc: "초대 황제가 남긴, 지키지 못한 약속의 증표입니다. 영원한 사랑을 맹세했던 이의 눈물이 서려 있습니다." },
+            3: { icon: "📜", title: "마탑주의 비밀 쪽지", desc: "오직 진실된 눈을 가진 자만이 읽을 수 있는 고대어입니다. '모든 운명은 당신의 선택에 달려있다'고 적혀있군요." }
+        };
+        function foundArtifact(id) {
+            const artifact = document.getElementById(`artifact-${id}`); if (artifact.classList.contains('found')) return;
+            playSfx(sfxClick); artifact.classList.add('found');
+            const data = secretData[id]; secretIcon.innerText = data.icon; secretTitle.innerText = data.title; secretDesc.innerText = data.desc;
+            secretModal.classList.add('show'); foundCount++; counterDisplay.innerText = foundCount;
+            if (foundCount === totalArtifacts) { setTimeout(() => alert("축하합니다! 모든 숨겨진 비밀을 찾으셨습니다. 당신은 진정한 이 세계의 주인입니다."), 500); }
+        }
+        function closeSecretModal() { secretModal.classList.remove('show'); }
     </script>
 </body>
 </html>
