@@ -1,0 +1,189 @@
+/* 기본 스타일 초기화 및 폰트 */
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8; /* 배경을 살짝 회색으로 설정하여 작품 강조 */
+    color: #333;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 1. 헤더 (고정 네비게이션) */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    position: fixed; /* 상단 고정 */
+    width: 90%;
+    top: 0;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.9); /* 스크롤 시 투명도 주기 */
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.main-nav li {
+    margin-left: 30px;
+}
+
+.main-nav a:hover {
+    color: #007bff; /* 강조색 지정 */
+}
+
+/* 2. 메인 섹션 */
+.hero-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: url('images/main-work-background.jpg') no-repeat center center/cover; /* 대표 작품 이미지로 배경 설정 */
+    color: white; /* 텍스트 색상을 대비되게 */
+    position: relative;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* 이미지에 어두운 오버레이 추가 */
+}
+
+.hero-content {
+    z-index: 10;
+}
+
+.hero-content h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 30px;
+    border: 2px solid white;
+    color: white;
+    font-weight: 700;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: white;
+    color: #333;
+}
+
+/* 3. 포트폴리오 섹션 (그리드) */
+.portfolio-section {
+    padding: 80px 5%;
+    text-align: center;
+}
+
+.portfolio-section h2 {
+    font-size: 2em;
+    margin-bottom: 50px;
+}
+
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* 반응형 그리드 핵심 */
+    gap: 30px;
+}
+
+.portfolio-item {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-item img {
+    transition: transform 0.5s ease;
+}
+
+.portfolio-item:hover img {
+    transform: scale(1.05); /* 마우스 오버 시 확대 효과 */
+}
+
+.caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 15px;
+    text-align: left;
+    font-weight: 700;
+    opacity: 0; /* 평소에는 숨김 */
+    transition: opacity 0.3s;
+}
+
+.portfolio-item:hover .caption {
+    opacity: 1; /* 마우스 오버 시 보이기 */
+}
+
+.caption span {
+    display: block;
+    font-weight: 400;
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* 4. 푸터 */
+.main-footer {
+    text-align: center;
+    padding: 20px 5%;
+    background-color: #333;
+    color: white;
+    font-size: 0.9em;
+}
+
+.main-footer a {
+    color: white;
+}
+
+/* 미디어 쿼리 (모바일 최적화) */
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        padding: 15px 5%;
+        position: static; /* 모바일에서는 고정 해제 */
+    }
+
+    .main-nav ul {
+        margin-top: 10px;
+    }
+
+    .main-nav li {
+        margin-left: 15px;
+    }
+
+    .hero-content h1 {
+        font-size: 2em;
+    }
+}
