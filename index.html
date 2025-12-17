@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI 콘텐츠 전시회</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Chakra+Petch:wght@300;500;600&display=swap" rel="stylesheet">
+    <title>The Royal Gallery | AI Contents</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS Variables (Light & Sophisticated Theme) --- */
+        /* --- CSS Variables (Romance Fantasy Theme) --- */
         :root {
-            --bg-color: #f4f7f9;
-            --accent-blue: #2563eb;
-            --accent-purple: #7c3aed;
-            --text-color: #1f2937;
-            --glass-bg: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.8);
-            --section-spacing: 120px;
+            --bg-color: #fdfcf8; /* 크림색 배경 */
+            --accent-gold: #d4af37; /* 앤틱 골드 */
+            --accent-rose: #e0bfb8; /* 로즈 골드 */
+            --text-color: #4a3b32; /* 진한 갈색 (부드러운 블랙) */
+            --glass-bg: rgba(255, 253, 250, 0.85);
+            --glass-border: rgba(212, 175, 55, 0.4); /* 금색 테두리 */
+            --section-spacing: 140px;
         }
 
         * {
@@ -24,22 +24,22 @@
         }
 
         body {
-            font-family: 'Chakra Petch', sans-serif;
+            font-family: 'Gowun Batang', serif; /* 명조체 계열 */
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
-            line-height: 1.6;
+            line-height: 1.8;
             -webkit-font-smoothing: antialiased;
         }
 
         h1, h2, h3 {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Cinzel', serif; /* 클래식한 영문 폰트 */
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #111;
+            letter-spacing: 3px;
+            color: #2c241b;
         }
 
-        /* --- Moving AI Background (Canvas) --- */
+        /* --- Magical Background (Canvas) --- */
         #ai-network-canvas {
             position: fixed;
             top: 0;
@@ -47,15 +47,15 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at top left, #ffffff 0%, #e2e8f0 100%);
+            /* 은은한 새벽/노을 느낌의 그라데이션 */
+            background: linear-gradient(135deg, #fffbf0 0%, #fff0f5 100%);
         }
 
-        /* --- Layout & Containers --- */
+        /* --- Layout --- */
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 0 auto;
-            /* [수정] 컨테이너 내부의 모든 요소를 중앙 정렬 */
             text-align: center;
         }
 
@@ -64,19 +64,19 @@
             position: relative;
         }
 
-        /* --- Animation --- */
+        /* --- Reveal Animation --- */
         .reveal-up {
             opacity: 0;
-            transform: translateY(80px) scale(0.95);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translateY(60px);
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .reveal-up.active {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translateY(0);
         }
 
-        /* --- Section 1: Hero (Intro) --- */
+        /* --- Hero Section --- */
         .hero-section {
             height: 100vh;
             display: flex;
@@ -86,165 +86,148 @@
         }
 
         .hero-content h1 {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 800;
-            margin-bottom: 20px;
-            color: #111;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-            position: relative;
-            display: inline-block;
-        }
-        
-        .hero-content h1::before, .hero-content h1::after {
-            content: 'AIon Canvas';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: transparent;
-            opacity: 0.5;
-        }
-        .hero-content h1::before {
-            color: var(--accent-blue);
-            z-index: -1;
-            animation: glitch-anim-1 3s infinite linear alternate-reverse;
-        }
-        .hero-content h1::after {
-            color: var(--accent-purple);
-            z-index: -2;
-            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #2a2a2a;
+            /* 우아한 텍스트 그림자 */
+            text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3); 
+            background: -webkit-linear-gradient(45deg, #2c241b, #d4af37, #2c241b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; 
+            background-size: 200% auto;
+            animation: shineText 5s linear infinite;
         }
 
-        @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 0); }
-            100% { clip-path: inset(80% 0 10% 0); transform: translate(2px, 0); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, 0); }
-            100% { clip-path: inset(30% 0 5% 0); transform: translate(-2px, 0); }
+        @keyframes shineText {
+            to { background-position: 200% center; }
         }
 
         .hero-content p {
-            font-size: 1.2rem;
-            color: #555;
+            font-size: 1.3rem;
+            color: #6d5d53;
             max-width: 600px;
             margin: 0 auto;
-            font-weight: 500;
-        }
-
-        /* --- Section Titles (Center Aligned) --- */
-        .section-title {
-            /* [수정] 복잡한 transform 제거, inline-block으로 중앙 정렬 자연스럽게 유도 */
+            font-weight: 400;
+            border-top: 1px solid var(--accent-gold);
+            border-bottom: 1px solid var(--accent-gold);
+            padding: 20px 0;
             display: inline-block;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
+        }
+
+        /* --- Titles --- */
+        .section-title {
+            display: inline-block;
+            font-size: 2.2rem;
+            margin-bottom: 70px;
             position: relative;
+            color: #2c241b;
         }
 
+        /* 장식적인 밑줄 (Decoration) */
         .section-title::after {
+            content: '❖'; /* 마름모 장식 */
+            display: block;
+            font-size: 1rem;
+            color: var(--accent-gold);
+            margin-top: 15px;
+            letter-spacing: 10px;
+        }
+        .section-title::before {
             content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-            border-radius: 2px;
+            display: block;
+            width: 60px;
+            height: 1px;
+            background: var(--accent-gold);
+            margin: 0 auto 10px auto;
         }
 
-        /* --- Section 2: AI Characters (Cards) --- */
+        /* --- Character Cards (Portrait Frame Style) --- */
         .character-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            /* [수정] 그리드 아이템이 적을 때도 중앙에 오도록 설정 */
+            gap: 50px;
             justify-content: center; 
         }
 
         .char-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
+            background: #fff;
+            /* 이중 테두리로 액자 느낌 */
+            border: 1px solid var(--accent-gold);
+            outline: 4px solid rgba(212, 175, 55, 0.1);
+            outline-offset: -10px;
+            
+            border-radius: 4px; /* 각진 모서리로 클래식함 강조 */
             overflow: hidden;
             position: relative;
-            transition: all 0.4s ease-out;
+            transition: all 0.5s ease;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            /* 카드 내부 텍스트는 왼쪽 정렬이 보기 좋으나, 중앙 요청 시 center */
-            text-align: center; 
+            box-shadow: 0 15px 30px rgba(74, 59, 50, 0.1);
         }
 
         .char-card:hover {
-            transform: translateY(-15px);
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(212, 175, 55, 0.25);
+            outline-color: rgba(212, 175, 55, 0.6);
         }
 
         .char-img-box {
-            height: 400px;
+            height: 420px;
             overflow: hidden;
             position: relative;
-            background: #e2e8f0;
+            background: #f4f1ea;
         }
 
         .char-img-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem; color: #94a3b8;
+            transition: transform 0.8s ease;
         }
 
         .char-card:hover .char-img-box img {
-            transform: scale(1.08);
+            transform: scale(1.05);
+            filter: sepia(20%); /* 살짝 빛바랜 느낌 */
         }
 
         .char-info {
-            padding: 25px;
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(to top, rgba(255,255,255,0.95), rgba(255,255,255,0.8), transparent);
+            padding: 30px 20px;
+            background: #fff;
+            position: relative;
             z-index: 3;
         }
 
         .char-info h3 {
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-            color: var(--accent-blue);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #2c241b;
             font-weight: 700;
         }
         
         .char-info p {
-            color: #4b5563;
-            font-weight: 500;
+            color: #8c7b70;
+            font-size: 0.95rem;
+            font-family: 'Gowun Batang', serif;
         }
 
-        /* --- Section 3: Video --- */
+        /* --- Video Section --- */
         .video-wrapper {
             width: 100%;
-            border-radius: 20px;
+            border-radius: 4px;
             overflow: hidden;
             position: relative;
-            border: 2px solid #fff;
-            transition: all 0.5s ease;
+            /* 금색 액자 스타일 */
+            border: 8px solid #fff;
+            outline: 1px solid var(--accent-gold);
             box-shadow: 0 20px 50px rgba(0,0,0,0.1);
             background: #fff;
-            margin: 0 auto; /* 비디오 래퍼 중앙 정렬 */
-        }
-
-        .video-wrapper:hover {
-            border-color: var(--accent-blue);
-            box-shadow: 0 20px 60px rgba(37, 99, 235, 0.2);
+            margin: 0 auto;
         }
 
         .video-placeholder {
             width: 100%;
             height: 60vh;
-            background: #f1f5f9;
+            background: #fcfbf8;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -255,50 +238,164 @@
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 5rem;
-            color: var(--accent-blue);
+            font-size: 4rem;
+            color: var(--accent-gold);
             pointer-events: none;
-            opacity: 0.8;
+            opacity: 0.7;
             transition: 0.3s;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .video-wrapper:hover .play-button-overlay {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1.1);
-            color: var(--accent-purple);
         }
 
-        /* --- Section 4: Contact --- */
-        .contact-section {
-            /* 상위 container에서 text-align: center를 했으므로 자동 중앙 정렬됨 */
-            padding-bottom: 80px;
-        }
+        /* --- Contact --- */
         .contact-link {
             display: inline-block;
-            font-size: 1.2rem;
-            color: var(--accent-blue);
+            font-size: 1.1rem;
+            color: var(--text-color);
             text-decoration: none;
-            border: 2px solid var(--accent-blue);
-            padding: 15px 40px;
-            border-radius: 50px;
-            transition: 0.3s;
-            font-family: 'Orbitron', sans-serif;
+            border: 1px solid var(--accent-gold);
+            padding: 18px 50px;
+            transition: 0.4s;
+            font-family: 'Cinzel', serif;
             font-weight: 700;
-            background: rgba(255,255,255,0.5);
-            margin-top: 20px; /* 버튼 위 여백 추가 */
+            background: transparent;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
         }
-        .contact-link:hover {
-             background: var(--accent-blue);
-             color: white;
-             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
-             transform: translateY(-3px);
+        
+        /* 버튼 호버 효과 */
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 0%; height: 100%;
+            background: var(--accent-gold);
+            transition: 0.4s;
+            z-index: -1;
         }
 
-        /* 모바일 대응 */
+        .contact-link:hover {
+            color: #fff;
+            border-color: var(--accent-gold);
+        }
+        .contact-link:hover::before {
+            width: 100%;
+        }
+
+        /* --- Modal Popup (RoFan Style) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(44, 36, 27, 0.6); /* 짙은 갈색 배경 */
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: #fffcf5; /* 양피지 느낌 */
+            width: 90%;
+            max-width: 900px;
+            border: 1px solid var(--accent-gold);
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 0 0 10px rgba(255,255,255,0.2), 0 30px 60px rgba(0,0,0,0.3);
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+            text-align: left;
+            /* 장식용 코너 */
+            background-image: 
+                linear-gradient(45deg, var(--accent-gold) 10px, transparent 10px),
+                linear-gradient(135deg, var(--accent-gold) 10px, transparent 10px),
+                linear-gradient(225deg, var(--accent-gold) 10px, transparent 10px),
+                linear-gradient(315deg, var(--accent-gold) 10px, transparent 10px);
+            background-position: top left, top right, bottom right, bottom left;
+            background-size: 20px 20px;
+            background-repeat: no-repeat;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-body {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .modal-img-box {
+            flex: 0 0 350px;
+            border: 5px solid #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            outline: 1px solid var(--accent-gold);
+        }
+
+        .modal-img-box img {
+            width: 100%;
+            display: block;
+        }
+
+        .modal-text {
+            flex: 1;
+        }
+
+        .modal-text h3 {
+            font-size: 2.2rem;
+            color: #2c241b;
+            margin-bottom: 5px;
+            border-bottom: 1px solid var(--accent-gold);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .modal-desc-short {
+            font-size: 1.1rem;
+            color: #d4af37; /* 골드 컬러 */
+            font-weight: 700;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .modal-detail-text {
+            font-size: 1.05rem;
+            color: #5d4d42;
+            line-height: 1.9;
+            white-space: pre-line;
+            font-family: 'Gowun Batang', serif;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 25px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #d4af37;
+            transition: 0.3s;
+        }
+        .close-btn:hover { color: #2c241b; transform: rotate(90deg); }
+
         @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.8rem; }
+            .hero-content h1 { font-size: 2.5rem; }
             --section-spacing: 80px;
-            .char-img-box { height: 300px; }
-            .video-placeholder { height: 40vh; }
+            .char-img-box { height: 350px; }
+            .modal-body { flex-direction: column; }
+            .modal-img-box { flex: auto; width: 100%; }
+            .modal-content { padding: 25px; }
         }
     </style>
 </head>
@@ -308,53 +405,75 @@
 
     <section class="hero-section">
         <div class="container hero-content">
-            <h1>AI CONTENTS GALLERY</h1>
-            <p>인공지능으로 그려낸 새로운 차원의 디지털 포트폴리오</p>
+            <h1>The Royal Gallery</h1>
+            <p>마법과 기술이 공존하는 세계, AI로 피워낸 당신만의 로맨스 판타지</p>
         </div>
     </section>
 
     <section id="characters">
         <div class="container">
-            <h2 class="section-title reveal-up">AI Characters</h2>
+            <h2 class="section-title reveal-up">Characters</h2>
             <div class="character-grid">
-                <div class="char-card reveal-up" style="transition-delay: 0.2s;">
+                
+                <div class="char-card reveal-up" style="transition-delay: 0.2s;" 
+                     onclick="openModal(this)"
+                     data-detail="이름: 깡띵이
+                     나이: 3세 (추정)
+                     소개: 만사가 귀찮은 동네 강아지. 
+                     
+                     툴툴대지만 당신의 고민을 묵묵히 들어주는 츤데레 힐링견입니다. 칭찬을 들으면 화내는 척하며 꼬리를 흔듭니다.">
                     <div class="char-img-box">
-                        <img src="" alt="PLACEHOLDER 1">
+                        <img src="깡띵이.jpeg" alt="깡띵이 이미지">
                     </div>
                     <div class="char-info">
-                        <h3>Project: NEON SOUL</h3>
-                        <p>사이버펑크 AI 컨셉 아트</p>
+                        <h3>깡띵이</h3>
+                        <p> 만사가 귀찮은 듯 툴툴거리는 동네 강아지</p>
                     </div>
                 </div>
-                <div class="char-card reveal-up" style="transition-delay: 0.4s;">
+
+                <div class="char-card reveal-up" style="transition-delay: 0.4s;"
+                     onclick="openModal(this)"
+                     data-detail="이름: 벨라트릭스 드 로제
+                     나이: 20세
+                     소개: 제국 막내 황녀.
+                     
+                     천사 같은 외모 뒤에 황위 계승을 노리는 야망을 품고 있습니다. 당신을 자신의 편으로 만들기 위해 달콤하게 접근합니다.">
                     <div class="char-img-box">
-                         <img src="" alt="PLACEHOLDER 2">
+                         <img src="벨라트릭스4.jpeg" alt="벨라트릭스 이미지">
                     </div>
                     <div class="char-info">
-                        <h3>Project: CYBER AURA</h3>
-                        <p>초현실주의 디지털 휴먼</p>
+                        <h3>벨라트릭스</h3>
+                        <p>황제와 사교계의 총애를 한 몸에 받는 막내 황녀</p>
                     </div>
                 </div>
-                <div class="char-card reveal-up" style="transition-delay: 0.6s;">
+
+                <div class="char-card reveal-up" style="transition-delay: 0.6s;"
+                     onclick="openModal(this)"
+                     data-detail="이름: 카이릭 폰 에크하르트
+                     나이: 28세
+                     소개: 북부의 냉혈한 대공.
+                     
+                     정략결혼한 당신에게 거리를 두지만, 위기의 순간에는 누구보다 먼저 나타나 목숨 걸고 당신을 지켜냅니다.">
                     <div class="char-img-box">
-                         <img src="" alt="PLACEHOLDER 3">
+                         <img src="카이릭2.jpg" alt="카이릭 이미지">
                     </div>
                     <div class="char-info">
-                        <h3>Project: SYNTH MIND</h3>
-                        <p>생성형 AI 크리처 디자인</p>
+                        <h3>카이릭</h3>
+                        <p>북부의 지배자이자, 토벌에 미쳐사는 냉혈한 대공</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
     <section id="video">
         <div class="container">
-             <h2 class="section-title reveal-up">AI Commercial Film</h2>
+             <h2 class="section-title reveal-up">Cinematic Film</h2>
              <div class="video-wrapper reveal-up">
                  <div class="video-placeholder">
-                     <p style="color: #888; font-weight: 500;">[ VIDEO PLACEHOLDER AREA ]</p>
-                     <div class="play-button-overlay">▶</div>
+                     <p style="color: #8c7b70;">[ VIDEO PLACEHOLDER AREA ]</p>
+                     <div class="play-button-overlay">❖</div>
                  </div>
              </div>
         </div>
@@ -362,28 +481,40 @@
 
     <section class="contact-section reveal-up">
         <div class="container">
-            <h2 class="section-title">Connect Node</h2>
-            <p style="margin-bottom: 30px; color: #666;">협업 문의 및 프로젝트 제안을 기다립니다.</p>
-            <a href="mailto:your.email@example.com" class="contact-link">Send Signal_</a>
+            <h2 class="section-title">Invitation</h2>
+            <p style="margin-bottom: 20px; color: #6d5d53;">당신을 위한 특별한 이야기가 기다리고 있습니다.</p>
+            <a href="mailto:your.email@example.com" class="contact-link">Send Message</a>
         </div>
     </section>
 
+    <div id="char-modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">✕</span>
+            <div class="modal-body">
+                <div class="modal-img-box">
+                    <img id="modal-img" src="" alt="상세 이미지">
+                </div>
+                <div class="modal-text">
+                    <h3 id="modal-title">캐릭터 이름</h3>
+                    <p id="modal-desc" class="modal-desc-short">짧은 설명</p>
+                    <p id="modal-detail" class="modal-detail-text">상세 설명이 들어갑니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        /* --- Magical Particle Background (Gold Sparkles) --- */
         const canvas = document.getElementById('ai-network-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
         let particlesArray;
-        const numberOfParticles = 120;
-        const connectionDistance = 140;
+        const numberOfParticles = 80; // 입자 수 줄여서 여백의 미 살리기
+        const connectionDistance = 150;
 
-        let mouse = {
-            x: null,
-            y: null,
-            radius: 150
-        }
+        let mouse = { x: null, y: null, radius: 200 }
 
         window.addEventListener('mousemove', function(event) {
             mouse.x = event.x;
@@ -391,55 +522,49 @@
         });
 
         class Particle {
-            constructor(x, y, directionX, directionY, size, color) {
-                this.x = x;
-                this.y = y;
-                this.directionX = directionX;
-                this.directionY = directionY;
-                this.size = size;
-                this.color = color;
-                this.baseX = this.x;
-                this.baseY = this.y;
-                this.density = (Math.random() * 20) + 5;
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                // 천천히 부유하는 느낌
+                this.directionX = (Math.random() * 0.2) - 0.1; 
+                this.directionY = (Math.random() * 0.2) - 0.1;
+                this.size = (Math.random() * 3) + 1; // 크기 다양화
+                this.opacity = Math.random() * 0.5 + 0.2; // 반짝임 효과 기초
             }
 
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
+                // 앤틱 골드 색상 + 투명도
+                ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')';
                 ctx.fill();
             }
 
             update() {
+                // 마우스 근처에서 살짝 도망가는 효과
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx * dx + dy * dy);
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density;
-                let directionY = forceDirectionY * force * this.density;
-
+                let distance = Math.sqrt(dx*dx + dy*dy);
                 if (distance < mouse.radius) {
-                    this.x -= directionX;
-                    this.y -= directionY;
-                } else {
-                    if (this.x !== this.baseX) {
-                        let dx = this.x - this.baseX;
-                        this.x -= dx / 20;
-                    }
-                    if (this.y !== this.baseY) {
-                        let dy = this.y - this.baseY;
-                        this.y -= dy / 20;
-                    }
+                    if (mouse.x < this.x && this.x < canvas.width - this.size * 10) this.x += 0.5;
+                    if (mouse.x > this.x && this.x > this.size * 10) this.x -= 0.5;
+                    if (mouse.y < this.y && this.y < canvas.height - this.size * 10) this.y += 0.5;
+                    if (mouse.y > this.y && this.y > this.size * 10) this.y -= 0.5;
                 }
 
-                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
-                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
-                
                 this.x += this.directionX;
                 this.y += this.directionY;
+
+                // 화면 밖으로 나가면 반대편에서 등장 (자연스러운 순환)
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+
+                // 반짝이는 효과 (투명도 조절)
+                this.opacity += (Math.random() * 0.02) - 0.01;
+                if(this.opacity < 0.1) this.opacity = 0.1;
+                if(this.opacity > 0.8) this.opacity = 0.8;
 
                 this.draw();
             }
@@ -448,29 +573,21 @@
         function init() {
             particlesArray = [];
             for (let i = 0; i < numberOfParticles; i++) {
-                let size = (Math.random() * 2) + 1;
-                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
-                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
-                let directionX = (Math.random() * 0.4) - 0.2;
-                let directionY = (Math.random() * 0.4) - 0.2;
-                
-                let color = 'rgba(75, 85, 99, 0.4)'; 
-
-                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+                particlesArray.push(new Particle());
             }
         }
 
         function connect() {
-            let opacityValue = 1;
+            // 연결선을 아주 연하게 그려서 마법 실타래 같은 느낌
             for (let a = 0; a < particlesArray.length; a++) {
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
                         + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                     
                     if (distance < (connectionDistance * connectionDistance)) {
-                        opacityValue = 1 - (distance / 20000);
-                        ctx.strokeStyle = 'rgba(37, 99, 235,' + opacityValue * 0.5 + ')'; 
-                        ctx.lineWidth = 0.8; 
+                        // 매우 얇고 투명한 금색 선
+                        ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)'; 
+                        ctx.lineWidth = 0.5;
                         ctx.beginPath();
                         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
                         ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
@@ -482,7 +599,7 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
             }
@@ -490,37 +607,55 @@
         }
 
         window.addEventListener('resize', function() {
-            canvas.width = innerWidth;
-            canvas.height = innerHeight;
-            mouse.radius = ((canvas.height/80) * (canvas.width/80));
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
             init();
         });
-
-        window.addEventListener('mouseout', function() {
-            mouse.x = undefined;
-            mouse.y = undefined;
-        })
 
         init();
         animate();
 
+        /* --- Scroll Animation --- */
         const revealElements = document.querySelectorAll('.reveal-up');
-
-        const revealOptions = {
-            threshold: 0.15,
-            rootMargin: "0px 0px -50px 0px"
-        };
-
-        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target);
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
             });
-        }, revealOptions);
+        }, { threshold: 0.1 });
 
-        revealElements.forEach(el => {
-            revealOnScroll.observe(el);
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        /* --- Modal Scripts --- */
+        const modal = document.getElementById('char-modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalDetail = document.getElementById('modal-detail');
+
+        function openModal(element) {
+            const imgSrc = element.querySelector('img').src;
+            const title = element.querySelector('h3').innerText;
+            const desc = element.querySelector('p').innerText;
+            const detail = element.getAttribute('data-detail');
+
+            modalImg.src = imgSrc;
+            modalTitle.innerText = title;
+            modalDesc.innerText = desc;
+            modalDetail.innerText = detail ? detail : "";
+
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
         });
     </script>
 </body>
