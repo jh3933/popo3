@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Royal Gallery | AI Contents</title>
+    <title>Atelier of Illusions</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* --- CSS Variables (Romance Fantasy Theme) --- */
@@ -397,16 +397,65 @@
             .modal-img-box { flex: auto; width: 100%; }
             .modal-content { padding: 25px; }
         }
+
+        /* --- [NEW] Music Player Button Style --- */
+        .music-control {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 253, 250, 0.9);
+            border: 2px solid var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            color: var(--accent-gold);
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .music-control:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            background: #fff;
+        }
+
+        /* 음악 재생 중일 때 회전 효과 */
+        .music-control.playing {
+            animation: spin 4s linear infinite;
+            border-color: var(--accent-rose);
+            color: var(--accent-rose);
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
     <canvas id="ai-network-canvas"></canvas>
 
+    <audio id="bgm-audio" loop>
+        <source src="Whispers of Starlight.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="music-control" onclick="toggleMusic()" title="Play Music">
+        <span id="music-icon">♫</span>
+    </div>
+
     <section class="hero-section">
         <div class="container hero-content">
-            <h1>The Royal Gallery</h1>
-            <p>마법과 기술이 공존하는 세계, AI로 피워낸 당신만의 로맨스 판타지</p>
+            <h1>Atelier of Illusions</h1>
+            <p>현실의 경계를 넘어, 마침내 도달한 당신만의 세계</p>
         </div>
     </section>
 
@@ -439,7 +488,7 @@
                      
                      천사 같은 외모 뒤에 황위 계승을 노리는 야망을 품고 있습니다. 당신을 자신의 편으로 만들기 위해 달콤하게 접근합니다.">
                     <div class="char-img-box">
-                         <img src="벨라트릭스4.jpeg" alt="벨라트릭스 이미지">
+                         <img src="벨라트릭스2.jpeg" alt="벨라트릭스 이미지">
                     </div>
                     <div class="char-info">
                         <h3>벨라트릭스</h3>
@@ -511,7 +560,7 @@
         canvas.height = window.innerHeight;
 
         let particlesArray;
-        const numberOfParticles = 80; // 입자 수 줄여서 여백의 미 살리기
+        const numberOfParticles = 80;
         const connectionDistance = 150;
 
         let mouse = { x: null, y: null, radius: 200 }
@@ -525,23 +574,20 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                // 천천히 부유하는 느낌
                 this.directionX = (Math.random() * 0.2) - 0.1; 
                 this.directionY = (Math.random() * 0.2) - 0.1;
-                this.size = (Math.random() * 3) + 1; // 크기 다양화
-                this.opacity = Math.random() * 0.5 + 0.2; // 반짝임 효과 기초
+                this.size = (Math.random() * 3) + 1;
+                this.opacity = Math.random() * 0.5 + 0.2;
             }
 
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-                // 앤틱 골드 색상 + 투명도
                 ctx.fillStyle = 'rgba(212, 175, 55, ' + this.opacity + ')';
                 ctx.fill();
             }
 
             update() {
-                // 마우스 근처에서 살짝 도망가는 효과
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx*dx + dy*dy);
@@ -555,13 +601,11 @@
                 this.x += this.directionX;
                 this.y += this.directionY;
 
-                // 화면 밖으로 나가면 반대편에서 등장 (자연스러운 순환)
                 if (this.x < 0) this.x = canvas.width;
                 if (this.x > canvas.width) this.x = 0;
                 if (this.y < 0) this.y = canvas.height;
                 if (this.y > canvas.height) this.y = 0;
 
-                // 반짝이는 효과 (투명도 조절)
                 this.opacity += (Math.random() * 0.02) - 0.01;
                 if(this.opacity < 0.1) this.opacity = 0.1;
                 if(this.opacity > 0.8) this.opacity = 0.8;
@@ -578,14 +622,12 @@
         }
 
         function connect() {
-            // 연결선을 아주 연하게 그려서 마법 실타래 같은 느낌
             for (let a = 0; a < particlesArray.length; a++) {
                 for (let b = a; b < particlesArray.length; b++) {
                     let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
                         + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                     
                     if (distance < (connectionDistance * connectionDistance)) {
-                        // 매우 얇고 투명한 금색 선
                         ctx.strokeStyle = 'rgba(212, 175, 55, 0.15)'; 
                         ctx.lineWidth = 0.5;
                         ctx.beginPath();
@@ -657,6 +699,27 @@
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
+
+        /* --- [NEW] Music Play Script --- */
+        const audio = document.getElementById('bgm-audio');
+        const musicIcon = document.getElementById('music-icon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                musicIcon.innerText = '♫'; // 음악 멈췄을 때 아이콘
+                document.querySelector('.music-control').classList.remove('playing');
+            } else {
+                audio.play().catch(error => {
+                    alert("음악 재생을 위해 페이지를 한 번 클릭해주세요.");
+                });
+                isPlaying = true;
+                musicIcon.innerText = '❚❚'; // 재생 중일 때 아이콘
+                document.querySelector('.music-control').classList.add('playing');
+            }
+        }
     </script>
 </body>
 </html>
