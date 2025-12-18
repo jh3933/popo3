@@ -6,7 +6,7 @@
     <title>Atelier of Illusions</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS Variables --- */
+        /* --- CSS Variables (Romance Fantasy Theme) --- */
         :root {
             --bg-color: #fdfcf8;
             --accent-gold: #d4af37;
@@ -102,6 +102,7 @@
             width: 0; height: 1.2em; vertical-align: middle;
         }
 
+        /* Scroll Indicator */
         .scroll-down {
             position: absolute; bottom: 30px; left: 50%;
             transform: translateX(-50%);
@@ -161,7 +162,7 @@
         .world-tagline { font-size: 1.2rem; color: #8a6d5d; font-style: italic; border-left: 3px solid var(--accent-gold); padding-left: 15px; margin-bottom: 30px; font-weight: 600; }
         .world-desc { font-size: 1rem; color: #5d4d42; line-height: 1.9; }
 
-        /* [FIXED] Relationship Chart Styles */
+        /* Relationship Chart Styles */
         .rel-diagram {
             position: relative; width: 100%; max-width: 800px; height: 600px; margin: 0 auto;
         }
@@ -185,19 +186,15 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: #4a3b32;
         }
 
-        /* [FIXED] Node Specific Hover States to prevent jumping */
+        /* Node Specific Hover States */
         .rel-node:hover { z-index: 3; box-shadow: 0 0 25px rgba(212, 175, 55, 0.6); }
-        
         .node-user { top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; border-color: var(--accent-rose); }
         .node-user span { background: var(--accent-rose); color: #fff; border: none; }
         .node-user:hover { transform: translate(-50%, -50%) scale(1.1); }
-
         .node-lowen { top: 10%; left: 50%; transform: translateX(-50%); }
         .node-lowen:hover { transform: translateX(-50%) scale(1.1); }
-
         .node-bellatrix { bottom: 15%; left: 15%; }
         .node-bellatrix:hover { transform: scale(1.1); }
-
         .node-kyric { bottom: 15%; right: 15%; }
         .node-kyric:hover { transform: scale(1.1); }
 
@@ -422,10 +419,14 @@
     <canvas id="ai-network-canvas"></canvas>
 
     <audio id="bgm-audio" loop>
-        <source src="Whispers of Starlight.mp3" type="audio/mp3">
+        <source src="Whispered Dreams2.mp3" type="audio/mp3">
     </audio>
     <audio id="sfx-hover"> <source src="hover.mp3" type="audio/mp3"> </audio>
     <audio id="sfx-click"> <source src="click.mp3" type="audio/mp3"> </audio>
+
+    <audio id="voice-lowen" src="로웬보이스.mp3"></audio>
+    <audio id="voice-bellatrix" src="벨라트릭스보이스.mp3"></audio>
+    <audio id="voice-kyric" src="카이릭보이스.mp3"></audio>
 
     <div class="music-control" onclick="toggleMusic()" title="Play Music">
         <span id="music-icon">♫</span>
@@ -608,14 +609,13 @@
         const sfxClick = document.getElementById('sfx-click');
         function playSfx(audio) { if(audio) { audio.currentTime = 0; audio.play().catch(() => {}); } }
 
-        /* [FIXED] Robust Loading Logic */
+        /* Robust Loading Logic */
         document.addEventListener("DOMContentLoaded", function() {
             const loader = document.getElementById('loader');
-            // Force load after 2 seconds regardless of asset state
             setTimeout(() => {
                 loader.classList.add('hidden');
                 setTimeout(startTypewriter, 500); 
-            }, 2000);
+            }, 2500); // 2.5초 강제 로딩
         });
 
         const canvas = document.getElementById('ai-network-canvas');
@@ -671,7 +671,7 @@
         /* Modal & Chat */
         const modal = document.getElementById('char-modal'); const modalImg = document.getElementById('modal-img'); const modalTitle = document.getElementById('modal-title'); const modalDesc = document.getElementById('modal-desc'); const modalDetail = document.getElementById('modal-detail'); const likeBtn = document.getElementById('like-btn'); const speechBubble = document.getElementById('speech-bubble'); const infoMode = document.getElementById('info-mode'); const chatMode = document.getElementById('chat-mode'); const chatLog = document.getElementById('chat-log'); const chatInput = document.getElementById('chat-input'); const chatBtn = document.getElementById('chat-btn'); let currentReaction = ""; let currentCharId = ""; 
 
-        /* [EXPANDED] Character Dialogues */
+        /* Character Dialogues */
         const responses = {
             lowen: {
                 greeting: "어서오세요. 마탑에는 무슨 일로?",
@@ -736,7 +736,22 @@
             const imgSrc = element.querySelector('img').src; const title = element.querySelector('h3').innerText; const desc = element.querySelector('p').innerText; const detail = element.getAttribute('data-detail'); currentReaction = element.getAttribute('data-reaction'); currentCharId = charId; modalImg.src = imgSrc; modalTitle.innerText = title; modalDesc.innerText = desc; modalDetail.innerText = detail; likeBtn.classList.remove('liked'); speechBubble.classList.remove('show'); speechBubble.innerText = ""; infoMode.style.display = 'block'; chatMode.style.display = 'none'; chatMode.classList.remove('active'); chatBtn.innerText = "💬 대화하기"; modal.classList.add('show'); document.body.style.overflow = 'hidden';
         }
         function closeModal() { modal.classList.remove('show'); document.body.style.overflow = 'auto'; }
-        function toggleLike() { if (!likeBtn.classList.contains('liked')) { likeBtn.classList.add('liked'); speechBubble.innerText = currentReaction; speechBubble.classList.add('show'); setTimeout(() => { speechBubble.classList.remove('show'); }, 3000); } }
+        
+        /* [NEW] Voice Play Logic */
+        function toggleLike() { 
+            if (!likeBtn.classList.contains('liked')) { 
+                likeBtn.classList.add('liked'); 
+                speechBubble.innerText = currentReaction; 
+                speechBubble.classList.add('show'); 
+                
+                // Play Character Voice
+                const voiceAudio = document.getElementById(`voice-${currentCharId}`);
+                if(voiceAudio) playSfx(voiceAudio);
+
+                setTimeout(() => { speechBubble.classList.remove('show'); }, 3000); 
+            } 
+        }
+        
         function toggleChatMode() {
             if (chatMode.style.display === 'none' || chatMode.style.display === '') { infoMode.style.display = 'none'; chatMode.style.display = 'flex'; chatMode.classList.add('active'); chatBtn.innerText = "📜 정보 보기"; chatLog.innerHTML = `<div class="chat-message char">${responses[currentCharId].greeting}</div>`; } 
             else { infoMode.style.display = 'block'; chatMode.style.display = 'none'; chatMode.classList.remove('active'); chatBtn.innerText = "💬 대화하기"; }
