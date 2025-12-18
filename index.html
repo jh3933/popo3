@@ -229,22 +229,54 @@
         .char-info h3 { font-size: 1.5rem; margin-bottom: 10px; color: #2c241b; font-weight: 700; }
         .char-info p { color: #8c7b70; font-size: 0.95rem; font-family: 'Gowun Batang', serif; }
 
-        /* Video & Contact */
+        /* --- [UPDATED] Video Section Styles --- */
         .video-wrapper {
-            width: 100%; border-radius: 4px; overflow: hidden; position: relative;
-            border: 8px solid #fff; outline: 1px solid var(--accent-gold);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); background: #fff; margin: 0 auto;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            border: 15px solid #fff; 
+            outline: 2px solid var(--accent-gold);
+            outline-offset: -10px;
+            box-shadow: 0 25px 60px rgba(74, 59, 50, 0.25);
+            background: #fff;
+            margin: 0 auto;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .video-placeholder {
-            width: 100%; height: 60vh; background: #fcfbf8;
-            display: flex; justify-content: center; align-items: center; position: relative;
+
+        .video-wrapper:hover {
+            transform: translateY(-12px) scale(1.02);
         }
-        .play-button-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            font-size: 4rem; color: var(--accent-gold); pointer-events: none;
-            opacity: 0.7; transition: 0.3s; text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        /* Ornate Corner Decorations */
+        .video-wrapper::before {
+            content: '❖';
+            position: absolute;
+            top: 5px; left: 5px; width: 40px; height: 40px;
+            color: var(--accent-gold);
+            font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--accent-gold);
+            background: #fff; z-index: 5;
         }
-        .video-wrapper:hover .play-button-overlay { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+
+        /* Additional Decoration Layers */
+        .video-decoration {
+            position: absolute; width: 50px; height: 50px;
+            border: 2px solid var(--accent-gold);
+            z-index: 4; pointer-events: none;
+        }
+        .decor-tr { top: -10px; right: -10px; border-left: none; border-bottom: none; }
+        .decor-bl { bottom: -10px; left: -10px; border-right: none; border-top: none; }
+
+        video {
+            width: 100%;
+            display: block;
+            filter: sepia(5%) brightness(102%);
+            transition: 0.5s;
+        }
+        
+        .video-wrapper:hover video { filter: none; }
 
         .contact-link {
             display: inline-block; font-size: 1.1rem; color: var(--text-color);
@@ -560,8 +592,14 @@
         <div class="container">
              <h2 class="section-title reveal-up">Cinematic Film</h2>
              <div class="video-wrapper reveal-up">
-                 <div class="video-placeholder"><p style="color: #8c7b70;">[ VIDEO PLACEHOLDER AREA ]</p><div class="play-button-overlay">❖</div></div>
-                 <div class="artifact" id="artifact-2" style="bottom: 20px; right: 20px;" onclick="foundArtifact(2)">💍</div>
+                <div class="video-decoration decor-tr"></div>
+                <div class="video-decoration decor-bl"></div>
+
+                <video controls poster="썸네일.png" style="width: 100%; display: block;">
+                    <source src="캐릭터영상3.mp4" type="video/mp4">
+                    브라우저가 영상을 지원하지 않습니다.
+                </video>
+                <div class="artifact" id="artifact-2" style="bottom: 35px; right: 35px;" onclick="foundArtifact(2)">💍</div>
              </div>
         </div>
     </section>
@@ -753,7 +791,7 @@
         }
         
         function toggleChatMode() {
-            if (chatMode.style.display === 'none' || chatMode.style.display === '') { infoMode.style.display = 'none'; chatMode.style.display = 'flex'; chatMode.classList.add('active'); chatBtn.innerText = "📜 정보 보기"; chatLog.innerHTML = `<div class="chat-message char">${responses[currentCharId].greeting}</div>`; } 
+            if (chatMode.style.display === 'none' || chatMode.style.display === '') { infoMode.style.display = 'none'; chatMode.style.display = 'flex'; chatMode.classList.add('active'); chatBtn.innerText = "📜 정보 보기"; chatLog.innerHTML = `<div class="chat-message char">${responses[currentCharId].greeting}</div>`; } 
             else { infoMode.style.display = 'block'; chatMode.style.display = 'none'; chatMode.classList.remove('active'); chatBtn.innerText = "💬 대화하기"; }
         }
         function sendMessage() {
@@ -769,7 +807,7 @@
         /* Music */
         const audio = document.getElementById('bgm-audio'); const musicIcon = document.getElementById('music-icon'); let isPlaying = false;
         function toggleMusic() {
-            if (isPlaying) { audio.pause(); isPlaying = false; musicIcon.innerText = '♫'; document.querySelector('.music-control').classList.remove('playing'); } 
+            if (isPlaying) { audio.pause(); isPlaying = false; musicIcon.innerText = '♫'; document.querySelector('.music-control').classList.remove('playing'); } 
             else { audio.play().catch(() => alert("클릭 후 다시 시도해주세요.")); isPlaying = true; musicIcon.innerText = '❚❚'; document.querySelector('.music-control').classList.add('playing'); }
         }
 
